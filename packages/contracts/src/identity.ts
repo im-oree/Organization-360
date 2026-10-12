@@ -11,6 +11,16 @@ export const Role = z.object({
 });
 export type Role = z.infer<typeof Role>;
 
+export const Prefs = z.object({
+  theme: z.enum(["system", "light", "dark"]).default("system"),
+  /** Desktop notifications for messages when the app isn't in focus. */
+  desktopNotifications: z.boolean().default(true),
+  /** Short preview of the message text in notifications. Off shows only the sender. */
+  notificationPreview: z.boolean().default(true),
+});
+export type Prefs = z.infer<typeof Prefs>;
+export const defaultPrefs: Prefs = { theme: "system", desktopNotifications: true, notificationPreview: true };
+
 export const User = z.object({
   id: z.string(),
   name: z.string().min(1),
@@ -18,6 +28,7 @@ export const User = z.object({
   roleIds: z.array(z.string()),
   status: z.enum(["active", "suspended"]),
   mustChangePassword: z.boolean(),
+  prefs: Prefs.default(defaultPrefs),
   createdAt: z.iso.datetime(),
 });
 export type User = z.infer<typeof User>;

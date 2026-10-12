@@ -49,6 +49,15 @@ check(await shows(p.getByText("Staff number")), "a profile opens (not swallowed 
 await p.getByRole("link", { name: "Home", exact: true }).first().click();
 check(await shows(p.getByText(/Good (morning|afternoon|evening)/)), "back to Home from inside an app");
 
+console.log("Settings");
+await p.getByRole("link", { name: "Settings" }).click();
+await p.getByRole("radio", { name: /Dark/ }).click();
+check(await p.waitForFunction(() => document.documentElement.dataset.theme === "dark", null, { timeout: 4000 }).then(() => true, () => false), "choosing Dark applies the dark theme");
+await p.reload();
+check(await p.waitForFunction(() => document.documentElement.dataset.theme === "dark", null, { timeout: 4000 }).then(() => true, () => false), "theme choice survives a reload");
+await p.getByRole("radio", { name: /Light/ }).click();
+await p.waitForTimeout(500);
+
 console.log("Demo accounts");
 p = await browser.newPage();
 await p.goto(base);

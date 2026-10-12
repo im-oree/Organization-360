@@ -33,6 +33,10 @@ export type ModuleManifest = {
   launcher?: boolean;
   widgets?: Widget[];
   nav?: NavItem[];
+  /** "footer" keeps the module out of the main menu (reached from the user card, e.g. Settings). */
+  placement?: "main" | "footer";
+  /** Lives in the top bar on every page (e.g. the messages button and panel). */
+  topbar?: LazyExoticComponent<ComponentType>;
   notify?: Partial<Record<string, (payload: any) => string>>;
   order?: number;
 };

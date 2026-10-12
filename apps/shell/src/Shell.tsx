@@ -1,6 +1,6 @@
-import { BrandMark, useAuth, useBrand, useCan, useEvents, type ModuleManifest } from "@o360/platform";
+import { BrandMark, useAuth, useBrand, useThemeSync, useCan, useEvents, type ModuleManifest } from "@o360/platform";
 import { Avatar, confirm, ConfirmHost, Notifications, notify } from "@o360/ui";
-import { ArrowLeft, LogOut, Menu, Moon, Sun } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, Settings } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink, Route, Routes, useLocation } from "react-router";
@@ -11,6 +11,7 @@ const Verify = lazy(() => import("@o360/module-people/verify"));
 
 export function Root() {
   const { me, ready } = useAuth();
+  useThemeSync();
   const verify = location.pathname.match(/^\/verify\/([^/]+)/);
   if (verify) return <Suspense fallback={null}><Verify staffNo={decodeURIComponent(verify[1]!)} /></Suspense>;
   if (!ready) return null;
@@ -70,7 +71,7 @@ function Shell() {
           <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2">
             {current?.launcher !== false && (
               <>
-                <Link to="/" className="truncate text-muted hover:text-ink">{current?.area === "admin" ? "Admin" : "Apps"}</Link>
+                <Link to="/" className="truncate text-muted hover:text-ink">{current?.area === "admin" ? "Admin" : current?.placement === "footer" ? "You" : "Apps"}</Link>
                 <span className="text-line">/</span>
               </>
             )}
@@ -84,7 +85,12 @@ function Shell() {
               <strong className="truncate font-semibold text-accent">{current?.title ?? "Not found"}</strong>
             )}
           </nav>
-          <ThemeToggle />
+          <div className="ml-auto flex items-center gap-1">
+            {visible.filter((m) => m.topbar).map((m) => {
+              const T = m.topbar!;
+              return <Suspense key={m.id} fallback={null}><T /></Suspense>;
+            })}
+          </div>
         </header>
         <main id="main" className="flex-1 px-4 py-8 sm:px-8 sm:py-10">
           <Suspense fallback={null}>
@@ -105,7 +111,7 @@ function Sidebar({ items, app }: { items: ModuleManifest[]; app?: ModuleManifest
   const { me, signOut } = useAuth();
   const link = (m: ModuleManifest) => ({ path: m.path, label: m.title, icon: m.icon, end: m.path === "/" });
   const groups = [
-    { label: "", items: items.filter((m) => m.launcher === false).map(link) },
+    { label: "", items: items.filter((m) => m.launcher === false && m.placement !== "footer").map(link) },
     { label: "Apps", items: items.filter((m) => m.area === "workspace" && m.launcher !== false).map(link) },
     { label: "Admin", items: items.filter((m) => m.area === "admin").map(link) },
   ].filter((g) => g.items.length);
@@ -171,6 +177,9 @@ function Sidebar({ items, app }: { items: ModuleManifest[]; app?: ModuleManifest
               <p className="truncate text-[13px] font-semibold">{me.name}</p>
               <p className="truncate text-[11px] text-muted">{me.email}</p>
             </div>
+            <Link to="/settings" aria-label="Settings" className="grid size-8 place-items-center rounded-lg border border-line bg-surface text-muted hover:text-ink">
+              <Settings className="size-4" />
+            </Link>
             <button aria-label="Sign out" onClick={leave} className="grid size-8 place-items-center rounded-lg border border-line bg-surface text-muted hover:text-ink">
               <LogOut className="size-4" />
             </button>
@@ -186,21 +195,6 @@ function appGroups(app: ModuleManifest, can: (k?: string) => boolean) {
   const items = (app.nav ?? []).filter((n) => can(n.permission));
   const labels = [...new Set(items.map((n) => n.group ?? ""))];
   return labels.map((label) => ({ label, items: items.filter((n) => (n.group ?? "") === label) }));
-}
-
-function ThemeToggle() {
-  const [dark, setDark] = useState(() => {
-    try { return localStorage.getItem("theme") === "dark"; } catch { return false; }
-  });
-  useEffect(() => {
-    document.documentElement.dataset.theme = dark ? "dark" : "light";
-    try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch { /* storage unavailable */ }
-  }, [dark]);
-  return (
-    <button aria-label={dark ? "Use light theme" : "Use dark theme"} onClick={() => setDark(!dark)} className="ml-auto grid size-9 place-items-center rounded-lg border border-line text-muted hover:text-ink">
-      {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-    </button>
-  );
 }
 
 function NotFound() {

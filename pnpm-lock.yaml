@@ -32,6 +32,9 @@ importers:
       '@o360/module-people':
         specifier: workspace:*
         version: link:../../modules/people
+      '@o360/module-settings':
+        specifier: workspace:*
+        version: link:../../modules/settings
       '@o360/platform':
         specifier: workspace:*
         version: link:../../packages/platform
@@ -236,6 +239,37 @@ importers:
       '@types/qrcode':
         specifier: ^1.5.6
         version: 1.5.6
+      '@types/react':
+        specifier: ^19.1.12
+        version: 19.3.0
+
+  modules/settings:
+    dependencies:
+      '@o360/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@o360/platform':
+        specifier: workspace:*
+        version: link:../../packages/platform
+      '@o360/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      lucide-react:
+        specifier: ^0.542.0
+        version: 0.542.0(react@19.3.0)
+      motion:
+        specifier: ^12.23.12
+        version: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react:
+        specifier: ^19.1.1
+        version: 19.3.0
+      react-router:
+        specifier: ^7.18.4
+        version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.19.2
       '@types/react':
         specifier: ^19.1.12
         version: 19.3.0

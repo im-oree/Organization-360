@@ -23,3 +23,7 @@ body {
   body { background: white; }
   main { padding: 0 !important; }
 }
+
+/* App feel: no rubber-band page scroll, no accidental text selection on controls, no tap flash. */
+html { overscroll-behavior: none; -webkit-tap-highlight-color: transparent; }
+button, nav, header, [role="switch"], [role="radio"] { user-select: none; -webkit-user-select: none; }

@@ -15,6 +15,7 @@
     "@o360/module-home": "workspace:*",
     "@o360/module-identity": "workspace:*",
     "@o360/module-people": "workspace:*",
+    "@o360/module-settings": "workspace:*",
     "@o360/platform": "workspace:*",
     "@o360/tokens": "workspace:*",
     "@o360/ui": "workspace:*",

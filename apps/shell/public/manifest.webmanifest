@@ -1,0 +1,9 @@
+{
+  "name": "Organization 360",
+  "short_name": "O360",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fc",
+  "theme_color": "#002986",
+  "icons": [{ "src": "/brand/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

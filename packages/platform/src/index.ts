@@ -7,3 +7,4 @@ export * from "./auth";
 export * from "./action";
 export * from "./catalogue";
 export * from "./BrandMark";
+export * from "./theme";

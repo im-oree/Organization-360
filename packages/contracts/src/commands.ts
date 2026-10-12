@@ -21,6 +21,7 @@ export const CommandSchemas = {
   "identity.user.suspend": z.object({ email: z.email() }),
   "identity.role.save": Role.partial({ id: true, system: true }),
   "platform.extension.save": z.object({ id: z.string(), enabled: z.boolean(), settings: z.record(z.string(), z.string()).default({}) }),
+  "identity.prefs.save": z.object({ theme: z.enum(["system", "light", "dark"]), desktopNotifications: z.boolean(), notificationPreview: z.boolean() }).partial(),
   "identity.password.change": z.object({ current: z.string(), next: z.string().min(8) }),
 } as const;
 
