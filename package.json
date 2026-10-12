@@ -1,0 +1,15 @@
+{
+  "name": "organization-360",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.12.1",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @o360/gateway --filter @o360/shell dev",
+    "build": "pnpm --filter @o360/shell build",
+    "start": "pnpm --filter @o360/gateway start",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

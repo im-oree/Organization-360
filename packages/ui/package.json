@@ -1,0 +1,10 @@
+{
+  "name": "@o360/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p ." },
+  "dependencies": { "@o360/tokens": "workspace:*", "motion": "^12.23.12", "react": "^19.1.1", "react-dom": "^19.1.1" },
+  "devDependencies": { "@types/react": "^19.1.12", "@types/react-dom": "^19.1.9" }
+}

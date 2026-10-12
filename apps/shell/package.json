@@ -1,0 +1,33 @@
+{
+  "name": "@o360/shell",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@o360/module-automations": "workspace:*",
+    "@o360/module-home": "workspace:*",
+    "@o360/module-people": "workspace:*",
+    "@o360/platform": "workspace:*",
+    "@o360/tokens": "workspace:*",
+    "@o360/ui": "workspace:*",
+    "lucide-react": "^0.542.0",
+    "motion": "^12.23.12",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router": "^7.8.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.12",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
+    "tailwindcss": "^4.1.12",
+    "vite": "^7.1.4"
+  }
+}
