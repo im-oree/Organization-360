@@ -1,6 +1,6 @@
 import { BrandMark, useAuth, useBrand, useCan, useEvents, type ModuleManifest } from "@o360/platform";
 import { Avatar, confirm, ConfirmHost, Notifications, notify } from "@o360/ui";
-import { LogOut, Menu, Moon, Sun } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, Moon, Sun } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink, Route, Routes, useLocation } from "react-router";
@@ -30,6 +30,10 @@ function Shell() {
   const visible = modules.filter((m) => can(m.permission));
   const current = visible.find((m) => (m.path === "/" ? location.pathname === "/" : location.pathname.startsWith(m.path)));
 
+  const section = current?.nav
+    ?.filter((n) => (n.end ? location.pathname === n.path : location.pathname.startsWith(n.path)))
+    .sort((a, b) => b.path.length - a.path.length)[0]?.label ?? (current?.nav && location.pathname !== current.path ? "Profile" : undefined);
+
   useEffect(() => setDrawer(false), [location.pathname]);
   useEvents("", (e) => {
     for (const m of visible) {
@@ -42,7 +46,7 @@ function Shell() {
     <div className="flex min-h-full">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-surface focus:p-2">Skip to content</a>
       <aside className="sticky top-0 hidden h-screen w-[236px] shrink-0 border-r border-line bg-surface lg:block">
-        <Sidebar items={visible} />
+        <Sidebar items={visible} app={current?.nav ? current : undefined} />
       </aside>
       <AnimatePresence>
         {drawer && (
@@ -52,7 +56,7 @@ function Shell() {
               className="fixed inset-y-0 left-0 z-50 w-[260px] border-r border-line bg-surface lg:hidden"
               initial={{ x: -260 }} animate={{ x: 0 }} exit={{ x: -260 }} transition={{ type: "spring", stiffness: 420, damping: 40 }}
             >
-              <Sidebar items={visible} />
+              <Sidebar items={visible} app={current?.nav ? current : undefined} />
             </motion.aside>
           </>
         )}
@@ -70,7 +74,15 @@ function Shell() {
                 <span className="text-line">/</span>
               </>
             )}
-            <strong className="truncate font-semibold text-accent">{current?.title ?? "Not found"}</strong>
+            {section && current?.nav ? (
+              <>
+                <Link to={current.path} className="truncate text-muted hover:text-ink">{current.title}</Link>
+                <span className="text-line">/</span>
+                <strong className="truncate font-semibold text-accent">{section}</strong>
+              </>
+            ) : (
+              <strong className="truncate font-semibold text-accent">{current?.title ?? "Not found"}</strong>
+            )}
           </nav>
           <ThemeToggle />
         </header>
@@ -87,13 +99,15 @@ function Shell() {
   );
 }
 
-function Sidebar({ items }: { items: ModuleManifest[] }) {
+function Sidebar({ items, app }: { items: ModuleManifest[]; app?: ModuleManifest }) {
   const brand = useBrand();
+  const can = useCan();
   const { me, signOut } = useAuth();
+  const link = (m: ModuleManifest) => ({ path: m.path, label: m.title, icon: m.icon, end: m.path === "/" });
   const groups = [
-    { label: "", items: items.filter((m) => m.launcher === false) },
-    { label: "Apps", items: items.filter((m) => m.area === "workspace" && m.launcher !== false) },
-    { label: "Admin", items: items.filter((m) => m.area === "admin") },
+    { label: "", items: items.filter((m) => m.launcher === false).map(link) },
+    { label: "Apps", items: items.filter((m) => m.area === "workspace" && m.launcher !== false).map(link) },
+    { label: "Admin", items: items.filter((m) => m.area === "admin").map(link) },
   ].filter((g) => g.items.length);
 
   async function leave() {
@@ -109,18 +123,37 @@ function Sidebar({ items }: { items: ModuleManifest[] }) {
           <span className="block text-[9px] font-semibold uppercase tracking-[0.22em] text-label">Backoffice</span>
         </span>
       </Link>
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
-        {groups.map((g) => (
+      <AnimatePresence mode="wait" initial={false}>
+      <motion.nav
+        key={app?.id ?? "main"}
+        initial={{ opacity: 0, x: app ? 12 : -12 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: app ? -12 : 12 }}
+        transition={{ duration: 0.18 }}
+        className="flex-1 overflow-y-auto px-3 py-4"
+      >
+        {app && (
+          <div className="mb-5">
+            <Link to="/" className="mb-3 flex items-center gap-1.5 px-2.5 text-[12px] font-semibold text-muted hover:text-ink">
+              <ArrowLeft className="size-3.5" />Home
+            </Link>
+            <div className="flex items-center gap-2.5 px-2.5">
+              <span className="grid size-8 place-items-center rounded-lg bg-accent-soft text-accent"><app.icon className="size-[17px]" strokeWidth={1.8} /></span>
+              <span className="text-[15px] font-bold text-accent">{app.title}</span>
+            </div>
+          </div>
+        )}
+        {(app ? appGroups(app, can) : groups).map((g) => (
           <div key={g.label} className="mb-5">
             {g.label && <p className="mb-2 px-2.5 text-[11px] font-bold uppercase tracking-[0.07em] text-label">{g.label}</p>}
             {g.items.map((m) => (
-              <NavLink key={m.id} to={m.path} end={m.path === "/"} className="relative block">
+              <NavLink key={m.path} to={m.path} end={m.end ?? m.path === "/"} className="relative block">
                 {({ isActive }) => (
                   <>
                     {isActive && <motion.span layoutId="nav-active" className="absolute inset-0 rounded-lg bg-active" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
                     <span className={`relative flex min-h-9 items-center gap-2.5 rounded-lg px-2.5 text-[13px] ${isActive ? "font-semibold text-accent" : "text-muted hover:bg-fill hover:text-ink"}`}>
                       <m.icon className="size-[17px]" strokeWidth={1.8} />
-                      {m.title}
+                      {m.label}
                     </span>
                   </>
                 )}
@@ -128,7 +161,8 @@ function Sidebar({ items }: { items: ModuleManifest[] }) {
             ))}
           </div>
         ))}
-      </nav>
+      </motion.nav>
+      </AnimatePresence>
       {me && (
         <div className="border-t border-line p-3">
           <div className="flex items-center gap-2.5 rounded-[10px] bg-bg p-2.5">
@@ -145,6 +179,13 @@ function Sidebar({ items }: { items: ModuleManifest[] }) {
       )}
     </div>
   );
+}
+
+/** An app's own sidebar sections, grouped by `group`, filtered by permission. */
+function appGroups(app: ModuleManifest, can: (k?: string) => boolean) {
+  const items = (app.nav ?? []).filter((n) => can(n.permission));
+  const labels = [...new Set(items.map((n) => n.group ?? ""))];
+  return labels.map((label) => ({ label, items: items.filter((n) => (n.group ?? "") === label) }));
 }
 
 function ThemeToggle() {

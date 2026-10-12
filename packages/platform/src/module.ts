@@ -14,6 +14,9 @@ export type Widget = {
   component: LazyExoticComponent<ComponentType>;
 };
 
+/** An app's own navigation. When present, the shell switches to the app's sidebar inside it. */
+export type NavItem = { label: string; path: string; icon: Icon; end?: boolean; permission?: string; group?: string };
+
 export type ModuleManifest = {
   id: string;
   title: string;
@@ -29,6 +32,7 @@ export type ModuleManifest = {
   /** Hidden from the Apps section (e.g. Home itself). */
   launcher?: boolean;
   widgets?: Widget[];
+  nav?: NavItem[];
   notify?: Partial<Record<string, (payload: any) => string>>;
   order?: number;
 };

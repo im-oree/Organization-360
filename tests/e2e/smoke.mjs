@@ -40,7 +40,14 @@ console.log("Signed in");
 await signIn(p, password);
 check(await shows(p.getByText(/Good (morning|afternoon|evening)/)), "correct password opens Home");
 await p.getByRole("link", { name: "StaffDesk" }).first().click();
-check(await shows(p.getByRole("heading", { name: "StaffDesk" })), "StaffDesk opens");
+check(await shows(p.getByRole("heading", { name: "Directory" })) && p.url().endsWith("/staffdesk"), "StaffDesk opens at /staffdesk");
+await p.getByRole("link", { name: "Org chart" }).click();
+check(await shows(p.getByRole("heading", { name: "Org chart" })), "StaffDesk has its own sidebar sections");
+await p.getByRole("link", { name: "Directory" }).click();
+await p.getByRole("link", { name: /Ada Obi/ }).click();
+check(await shows(p.getByText("Staff number")), "a profile opens (not swallowed by a section route)");
+await p.getByRole("link", { name: "Home", exact: true }).first().click();
+check(await shows(p.getByText(/Good (morning|afternoon|evening)/)), "back to Home from inside an app");
 
 console.log("Demo accounts");
 p = await browser.newPage();

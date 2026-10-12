@@ -21,7 +21,7 @@ export function PeopleWidget() {
   const onboarding = data.filter((m) => m.status === "onboarding");
   const newest = [...current].sort((a, b) => b.startDate.localeCompare(a.startDate)).slice(0, 4);
   return (
-    <WidgetFrame title="People" to="/staff" action="Open StaffDesk">
+    <WidgetFrame title="People" to="/staffdesk" action="Open StaffDesk">
       <div className="grid grid-cols-2 gap-2 px-4">
         <Stat label="Current staff" value={current.length} />
         <Stat label="Onboarding" value={onboarding.length} tone={onboarding.length ? "warn" : undefined} />
@@ -30,7 +30,7 @@ export function PeopleWidget() {
       <ul className="pb-2">
         {newest.map((m) => (
           <li key={m.id}>
-            <Link to={`/staff/${m.id}`} className="flex items-center gap-2.5 px-4 py-2 hover:bg-fill">
+            <Link to={`/staffdesk/${m.id}`} className="flex items-center gap-2.5 px-4 py-2 hover:bg-fill">
               <Avatar name={m.name} size={26} />
               <span className="min-w-0 flex-1 truncate text-[13px] font-medium">{m.name}</span>
               <span className="text-[12px] text-muted">{new Date(m.startDate).toLocaleDateString(undefined, { day: "numeric", month: "short" })}</span>

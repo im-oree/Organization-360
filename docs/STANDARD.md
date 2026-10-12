@@ -13,6 +13,7 @@ A living profile of what we build and how. Every decision that proves right gets
 ## Interface
 
 - Sidebar: Home on its own, then Apps, then Admin. People only see what their roles allow; a basic member sees Home and the apps they use.
+- Each app has its own view: a module that declares `nav` gets its own sidebar (back to Home, app header, its sections) while you are inside it, and a breadcrumb of Apps / App / Section. App routes use the app name, e.g. `/staffdesk`.
 - Home is a dashboard of widgets. Any module adds widgets through its manifest (`widgets: [{ id, title, span, permission, component }]`), so Home grows with every app without editing Home.
 - Messaging will be a panel that's always available, opened from the top bar with an unread badge, plus a full Chat app using the same component.
 - Development builds offer one demo account per role on the sign-in page; new roles get one automatically. Off in production or with `DEMO_ACCOUNTS=off`.

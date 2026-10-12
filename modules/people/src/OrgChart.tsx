@@ -20,7 +20,7 @@ function Node({ m, all, depth }: { m: Member; all: Member[]; depth: number }) {
   return (
     <li className="flex flex-col items-center">
       <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: depth * 0.06 }}>
-        <Link to={`/staff/${m.id}`} className="flex w-52 items-center gap-2.5 rounded-brand border border-line bg-surface p-3 shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
+        <Link to={`/staffdesk/${m.id}`} className="flex w-52 items-center gap-2.5 rounded-brand border border-line bg-surface p-3 shadow-soft transition hover:-translate-y-0.5 hover:shadow-lift">
           <Avatar name={m.name} size={30} />
           <span className="min-w-0">
             <span className="block truncate text-[13px] font-semibold">{m.name}</span>

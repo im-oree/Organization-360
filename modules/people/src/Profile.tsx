@@ -21,7 +21,7 @@ export function Profile({ people }: { people: Member[] }) {
   const remove = useAction(() => api.run("people.member.remove", { id: id! }), { success: "Record deleted" });
 
   if (!people.length) return null;
-  if (!m) return <Empty>This person isn't in the directory anymore. <Link to="/staff" className="font-semibold text-accent hover:underline">Back to StaffDesk</Link></Empty>;
+  if (!m) return <Empty>This person isn't in the directory anymore. <Link to="/staffdesk" className="font-semibold text-accent hover:underline">Back to StaffDesk</Link></Empty>;
 
   const manager = people.find((p) => p.id === m.managerId);
   const reports = people.filter((p) => p.managerId === m.id && p.status !== "offboarded");
@@ -31,12 +31,12 @@ export function Profile({ people }: { people: Member[] }) {
   }
   async function askRemove() {
     if (await confirm({ title: `Delete ${m!.name}'s record?`, detail: "The record is removed for good. Offboarding keeps history, so prefer that for people who leave.", confirm: "Delete record", danger: true }))
-      if (await remove.run()) navigate("/staff");
+      if (await remove.run()) navigate("/staffdesk");
   }
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-5xl">
-      <Link to="/staff" className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink print:hidden">
+      <Link to="/staffdesk" className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted hover:text-ink print:hidden">
         <ArrowLeft className="size-4" />StaffDesk
       </Link>
 
@@ -62,7 +62,7 @@ export function Profile({ people }: { people: Member[] }) {
               <Detail label="Staff number"><span className="font-mono">{m.staffNo}</span></Detail>
               <Detail label="Office">{m.location || "—"}</Detail>
               <Detail label="Started">{new Date(m.startDate).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}</Detail>
-              <Detail label="Manager">{manager ? <Link to={`/staff/${manager.id}`} className="text-accent hover:underline">{manager.name}</Link> : "—"}</Detail>
+              <Detail label="Manager">{manager ? <Link to={`/staffdesk/${manager.id}`} className="text-accent hover:underline">{manager.name}</Link> : "—"}</Detail>
               <ExtensionValues app="people" values={m.ext} />
             </dl>
           </Card>
@@ -73,7 +73,7 @@ export function Profile({ people }: { people: Member[] }) {
               <ul className="space-y-1">
                 {reports.map((r) => (
                   <li key={r.id}>
-                    <Link to={`/staff/${r.id}`} className="-mx-2 flex items-center gap-3 rounded-lg p-2 hover:bg-fill">
+                    <Link to={`/staffdesk/${r.id}`} className="-mx-2 flex items-center gap-3 rounded-lg p-2 hover:bg-fill">
                       <Avatar name={r.name} size={28} /><span className="text-[14px] font-medium">{r.name}</span><span className="text-[13px] text-muted">{r.title}</span>
                     </Link>
                   </li>
