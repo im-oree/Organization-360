@@ -1,4 +1,4 @@
-import { BrandMark, useAuth, useBrand, useThemeSync, useCan, useEvents, type ModuleManifest } from "@o360/platform";
+import { BrandMark, useAuth, useBrand, useConnection, useThemeSync, useCan, useEvents, type ModuleManifest } from "@o360/platform";
 import { Avatar, confirm, ConfirmHost, Notifications, notify } from "@o360/ui";
 import { ArrowLeft, LogOut, Menu, Settings } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -92,6 +92,7 @@ function Shell() {
             })}
           </div>
         </header>
+        <ConnectionNotice />
         <main id="main" className="flex-1 px-4 py-8 sm:px-8 sm:py-10">
           <Suspense fallback={null}>
             <Routes>
@@ -195,6 +196,20 @@ function appGroups(app: ModuleManifest, can: (k?: string) => boolean) {
   const items = (app.nav ?? []).filter((n) => can(n.permission));
   const labels = [...new Set(items.map((n) => n.group ?? ""))];
   return labels.map((label) => ({ label, items: items.filter((n) => (n.group ?? "") === label) }));
+}
+
+/** Subtle notice while the live connection is down. Nothing goes stale silently. */
+function ConnectionNotice() {
+  const status = useConnection();
+  return (
+    <AnimatePresence>
+      {status === "offline" && (
+        <motion.div role="status" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-b border-line bg-[#fef3c7] text-[13px] text-[#92400e]">
+          <p className="px-4 py-2 sm:px-8">You're offline. Reconnecting… Changes you make will be checked when we're back.</p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
 
 function NotFound() {

@@ -1,7 +1,7 @@
 import type { EventName } from "@o360/contracts";
 import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
-import { useEvents } from "./events";
+import { onReconnect, useEvents } from "./events";
 
 /** Fetches a resource and refetches whenever a matching event arrives, so every view stays live. */
 export function useResource<T>(path: string, refreshOn: EventName[] | string | null = null) {
@@ -10,5 +10,6 @@ export function useResource<T>(path: string, refreshOn: EventName[] | string | n
   const reload = useCallback(() => api.get<T>(path).then((d) => (setData(d), setError(null)), setError), [path]);
   useEffect(() => void reload(), [reload]);
   useEvents(refreshOn, () => void reload());
+  useEffect(() => onReconnect(() => void reload()), [reload]);
   return { data, error, loading: data === undefined && !error, reload };
 }

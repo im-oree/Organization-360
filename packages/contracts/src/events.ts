@@ -28,7 +28,12 @@ export type EventPayload<N extends EventName> = z.infer<(typeof EventSchemas)[N]
 
 export type PlatformEvent<N extends EventName = EventName> = {
   id: string;
+  /** User ids allowed to receive it. Absent means: anyone with the app's view permission. */
+  audience?: string[];
   name: N;
   at: string;
   payload: EventPayload<N>;
 };
+
+/** Ephemeral, not stored or audited (e.g. typing indicators). Sent over the socket only. */
+export type Signal = { type: "signal"; name: string; from: string; payload: unknown };

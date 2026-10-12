@@ -5,6 +5,7 @@ const tasks = fileCollection<Task>("tasks");
 
 export default defineServerModule({
   id: "home",
+  visibility: { "tasks.": "tasks.task.view" },
   app: {
     title: "Tasks",
     permissions: [

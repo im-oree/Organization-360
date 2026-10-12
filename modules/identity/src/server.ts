@@ -86,6 +86,7 @@ export { SESSION_COOKIE };
 
 export default defineServerModule({
   id: "identity",
+  visibility: { "identity.": "identity.user.view" },
   app: {
     title: "Access",
     permissions: [

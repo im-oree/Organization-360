@@ -6,5 +6,5 @@ const gateway = process.env.GATEWAY_URL ?? "http://localhost:4000";
 
 export default defineConfig({
   plugins: [react(), tailwind()],
-  server: { proxy: { "/api": gateway, "/brand": gateway } },
+  server: { proxy: { "/api": { target: gateway, ws: true }, "/brand": gateway } },
 });

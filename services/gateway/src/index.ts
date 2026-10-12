@@ -7,7 +7,8 @@ import { authenticate, SESSION_COOKIE, tokenFrom } from "@o360/module-identity/s
 import { actorOf, automations, extensions, commandRunner, CommandError, fileCollection, guard, memoryBus, signedIn, type Env } from "@o360/server-kit";
 import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
-import { streamSSE } from "hono/streaming";
+import { createNodeWebSocket } from "@hono/node-ws";
+import { socketHub } from "./hub";
 import { ZodError } from "zod";
 import { modules } from "./modules";
 
@@ -81,14 +82,6 @@ api.post("/automations/:id", guard("automation.rule.toggle"), async (c) => {
   return rules.toggle(c.req.param("id"), enabled) ? c.json({ ok: true }) : c.json({ error: "That automation no longer exists. Refresh to see the latest." }, 404);
 });
 api.get("/events/recent", guard("automation.rule.view"), (c) => c.json(bus.recent()));
-api.get("/events", signedIn, (c) =>
-  streamSSE(c, async (stream) => {
-    const off = bus.subscribe((e) => void stream.writeSSE({ data: JSON.stringify(e), event: "event", id: e.id }));
-    stream.onAbort(off);
-    while (!stream.aborted) await stream.sleep(25_000).then(() => stream.writeSSE({ data: "", event: "ping" }));
-  }),
-);
-
 api.onError((err, c) => {
   if (err instanceof ZodError) return c.json(friendlyIssues(err.issues), 422);
   if (err instanceof CommandError) return c.json({ error: err.message, fields: err.fields }, err.status as 400);
@@ -100,6 +93,21 @@ api.onError((err, c) => {
 api.notFound((c) => c.json({ error: "That page or action doesn't exist." }, 404));
 
 const app = new Hono();
+const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app });
+const hub = socketHub(bus, [...modules, { id: "platform", visibility: { "platform.": "", "automation.": "automation.rule.view" } }], (t) => authenticate(t));
+
+/** Real-time channel. Sign-in is checked on connect and on every delivery. */
+app.get(
+  "/api/ws",
+  upgradeWebSocket((c) => {
+    const token = tokenFrom(getCookie(c, SESSION_COOKIE), c.req.header("authorization")) ?? "";
+    return {
+      onOpen: (_e, ws) => (authenticate(token) ? hub.open(ws, token) : ws.close(4401, "Sign in required")),
+      onMessage: (e, ws) => hub.message(ws, String(e.data)),
+      onClose: (_e, ws) => hub.close(ws),
+    };
+  }),
+);
 app.route("/api", api);
 app.use("/brand/*", serveStatic({ root: brandDir, rewriteRequestPath: (p) => p.replace(/^\/brand/, "") }));
 if (process.env.NODE_ENV === "production") {
@@ -108,4 +116,5 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", serveStatic({ path: resolve(dist, "index.html") }));
 }
 
-serve({ fetch: app.fetch, port }, () => console.log(`gateway → http://localhost:${port}`));
+const server = serve({ fetch: app.fetch, port }, () => console.log(`gateway → http://localhost:${port}`));
+injectWebSocket(server);

@@ -36,4 +36,3 @@ export const api = {
     request<R>("/commands", { method: "POST", body: JSON.stringify({ name, input, idempotencyKey }) }),
 };
 
-export const eventsUrl = `${base}/events`;

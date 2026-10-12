@@ -43,6 +43,10 @@ export type ServerModule = {
   /** Commands any signed-in user may run on their own behalf. */
   selfService?: string[];
   rules?: Rule[];
+  /** Who may receive this module's broadcast events: event-name prefix → permission ("" = anyone signed in). */
+  visibility?: Record<string, string>;
+  /** Ephemeral socket signals this module relays, e.g. typing. Return who gets it, or null to drop. */
+  signals?: Record<string, (payload: unknown, actor: Actor) => { audience: string[]; payload: unknown } | null>;
 };
 export const defineServerModule = (m: ServerModule) => m;
 export * from "./handles";

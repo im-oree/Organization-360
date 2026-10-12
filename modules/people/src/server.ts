@@ -43,6 +43,7 @@ function checkManager(managerId: string | null | undefined, self?: string) {
 
 export default defineServerModule({
   id: "people",
+  visibility: { "people.": "people.member.view" },
   app: {
     title: "StaffDesk",
     permissions: [

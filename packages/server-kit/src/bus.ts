@@ -7,7 +7,7 @@ type Listener = (event: PlatformEvent) => void | Promise<void>;
  * a NATS or Redis adapter with the same shape lets modules run as separate services.
  */
 export interface Bus {
-  publish<N extends EventName>(name: N, payload: EventPayload<N>): PlatformEvent<N>;
+  publish<N extends EventName>(name: N, payload: EventPayload<N>, opts?: { audience?: string[] }): PlatformEvent<N>;
   subscribe(listener: Listener): () => void;
   recent(limit?: number): PlatformEvent[];
 }
@@ -16,9 +16,10 @@ export function memoryBus(history = 200): Bus {
   const listeners = new Set<Listener>();
   const log: PlatformEvent[] = [];
   return {
-    publish(name, payload) {
+    publish(name, payload, opts) {
       const event = {
         id: crypto.randomUUID(),
+        audience: opts?.audience,
         name,
         at: new Date().toISOString(),
         payload: EventSchemas[name].parse(payload),

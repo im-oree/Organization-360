@@ -1,6 +1,7 @@
 import { can, type Me } from "@o360/contracts";
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { api, onUnauthorized } from "./api";
+import { setRealtime } from "./events";
 
 type Auth = { me: Me | null; ready: boolean; refresh: () => Promise<void>; signIn: (email: string, password: string) => Promise<void>; signOut: () => Promise<void> };
 const AuthContext = createContext<Auth | null>(null);
@@ -13,6 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(() => api.get<Me>("/auth/me").then(setMe, () => setMe(null)).finally(() => setReady(true)), []);
   useEffect(() => void refresh(), [refresh]);
   useEffect(() => onUnauthorized(() => setMe(null)), []);
+  useEffect(() => setRealtime(!!me), [!!me]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const t = setInterval(() => me && void refresh(), 60_000);
     return () => clearInterval(t);

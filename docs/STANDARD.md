@@ -56,6 +56,12 @@ Everything pluggable is described by data, so adding capability is configuration
 - **Hardware and connectors** are extensions plus a command. Example: the Badge and NFC extension adds a tag ID field and `people.badge.scan`, which readers call with their own reader account. Every scan becomes a `people.badge.scanned` event that automations can use.
 - Shipped StaffDesk extensions: LinkedIn profiles, GitHub accounts, Badge and NFC readers.
 
+## Real time
+
+- One WebSocket per tab at `/api/ws`, opened automatically after sign-in, reconnecting with backoff. Views refetch after a reconnect, and a quiet notice shows while offline.
+- Every event is filtered per person before sending: by its `audience` (user ids) if set, otherwise by the owning module's `visibility` (event prefix → permission). Unknown events go only to full admins. The person's access is re-checked on every delivery.
+- Signals are ephemeral socket messages (typing, presence) relayed by module handlers; never stored or audited.
+
 ## Code
 
 - Contracts first: add the schema, event and command to `packages/contracts`, then implement.
