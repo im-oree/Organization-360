@@ -42,6 +42,14 @@ check(await shows(p.getByText(/Good (morning|afternoon|evening)/)), "correct pas
 await p.getByRole("link", { name: "StaffDesk" }).first().click();
 check(await shows(p.getByRole("heading", { name: "StaffDesk" })), "StaffDesk opens");
 
+console.log("Demo accounts");
+p = await browser.newPage();
+await p.goto(base);
+await p.getByRole("button", { name: /Demo accounts/ }).click();
+await p.getByRole("button", { name: /demo\.member@example\.com/ }).click();
+check(await shows(p.getByRole("region", { name: "Tasks" })), "member signs in with one click and sees Home widgets");
+check((await p.getByRole("link", { name: "Users" }).count()) === 0, "member doesn't see Admin pages");
+
 await browser.close();
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):\n- ${failures.join("\n- ")}`);

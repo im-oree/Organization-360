@@ -9,11 +9,17 @@ type Session = { id: string; userId: string; expiresAt: string };
 const SESSION_COOKIE = "o360_session";
 const SESSION_DAYS = 14;
 
-const roles = fileCollection<Role>("roles", [
+const defaultRoles: Role[] = [
   { id: "owner", name: "Owner", permissions: ["*"], system: true },
   { id: "admin", name: "Administrator", permissions: ["people.*", "tasks.*", "identity.*", "automation.*", "platform.*"], system: false },
+  { id: "hr", name: "HR Manager", permissions: ["people.*", "tasks.*", "identity.user.view"], system: false },
+  { id: "lead", name: "Team Lead", permissions: ["people.member.view", "people.member.update", "tasks.*"], system: false },
   { id: "member", name: "Member", permissions: ["people.member.view", "tasks.task.view", "tasks.task.create", "tasks.task.toggle"], system: true },
-]);
+  { id: "reader", name: "Badge Reader", permissions: ["people.badge.scan"], system: false },
+];
+const roles = fileCollection<Role>("roles", defaultRoles);
+// Default roles added in later versions appear on existing installs too.
+for (const r of defaultRoles) if (!roles.get(r.id)) roles.put(r);
 const users = fileCollection<User>("users");
 const credentials = fileCollection<Credential>("credentials");
 const sessions = fileCollection<Session>("sessions");
@@ -44,6 +50,25 @@ if (users.all().length === 0) {
   console.log(`\n  Owner account → ${email} / ${password}\n`);
 }
 
+/**
+ * Demo accounts, one per role, for trying the platform as different people.
+ * Only when DEMO_ACCOUNTS isn't "off" and not in production. New roles get an account automatically.
+ */
+const DEMO = process.env.DEMO_ACCOUNTS !== "off" && process.env.NODE_ENV !== "production";
+const DEMO_PASSWORD = "Demo1234!";
+const fakeNames = ["Bola Adeyemi", "Funke Hassan", "Emeka Obi", "Sade Lawal", "Ifeanyi Eze", "Zainab Musa", "Tobi Adewale", "Ngozi Umeh", "Kunle Bakare", "Amaka Okoro"];
+
+function demoAccounts() {
+  return roles.all().map((r, i) => {
+    const email = `demo.${r.id}@example.com`;
+    let u = findByEmail(email);
+    if (!u) {
+      u = createUser(r.id === "reader" ? "Front Door Reader" : fakeNames[i % fakeNames.length]!, email, DEMO_PASSWORD, [r.id], false);
+    }
+    return { name: u.name, email, password: DEMO_PASSWORD, role: r.name, permissions: r.permissions.length };
+  });
+}
+
 /** Resolves the session cookie or bearer token to an actor. */
 export function authenticate(token: string | undefined): Actor | undefined {
   if (!token) return;
@@ -51,7 +76,7 @@ export function authenticate(token: string | undefined): Actor | undefined {
   if (!s || s.expiresAt < new Date().toISOString()) return;
   const u = users.get(s.userId);
   if (!u || u.status !== "active") return;
-  return { id: u.id, name: u.name, permissions: permissionsOf(u) };
+  return { id: u.id, name: u.name, email: u.email, permissions: permissionsOf(u) };
 }
 export const tokenFrom = (cookie: string | undefined, auth: string | undefined) => cookie ?? auth?.replace(/^Bearer /, "");
 export { SESSION_COOKIE };
@@ -93,6 +118,7 @@ export default defineServerModule({
       if (!u) throw new CommandError("Your session has ended. Sign in again to continue.", 401);
       return c.json(me(u));
     });
+    if (DEMO) app.get("/dev/accounts", (c) => c.json(demoAccounts()));
     app.get("/users", guard("identity.user.view"), (c) => c.json(users.all().sort((a, b) => a.name.localeCompare(b.name))));
     app.get("/roles", guard("identity.role.view"), (c) => c.json(roles.all()));
   },

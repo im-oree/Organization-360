@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import type { Bus } from "./bus";
 import type { Collection } from "./store";
 
-export type Actor = { id: string; name: string; permissions: string[] };
+export type Actor = { id: string; name: string; email?: string; permissions: string[] };
 export const SYSTEM: Actor = { id: "system", name: "System", permissions: ["*"] };
 
 export type Ctx = { actor: Actor; bus: Bus };

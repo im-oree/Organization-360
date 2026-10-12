@@ -64,8 +64,12 @@ function Shell() {
             <Menu className="size-5" />
           </button>
           <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-2">
-            <Link to="/" className="truncate text-muted hover:text-ink">{current?.area === "admin" ? "Backoffice" : "Workspace"}</Link>
-            <span className="text-line">/</span>
+            {current?.launcher !== false && (
+              <>
+                <Link to="/" className="truncate text-muted hover:text-ink">{current?.area === "admin" ? "Admin" : "Apps"}</Link>
+                <span className="text-line">/</span>
+              </>
+            )}
             <strong className="truncate font-semibold text-accent">{current?.title ?? "Not found"}</strong>
           </nav>
           <ThemeToggle />
@@ -87,8 +91,9 @@ function Sidebar({ items }: { items: ModuleManifest[] }) {
   const brand = useBrand();
   const { me, signOut } = useAuth();
   const groups = [
-    { label: "Workspace", items: items.filter((m) => m.area === "workspace") },
-    { label: "Backoffice", items: items.filter((m) => m.area === "admin") },
+    { label: "", items: items.filter((m) => m.launcher === false) },
+    { label: "Apps", items: items.filter((m) => m.area === "workspace" && m.launcher !== false) },
+    { label: "Admin", items: items.filter((m) => m.area === "admin") },
   ].filter((g) => g.items.length);
 
   async function leave() {
@@ -107,7 +112,7 @@ function Sidebar({ items }: { items: ModuleManifest[] }) {
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         {groups.map((g) => (
           <div key={g.label} className="mb-5">
-            <p className="mb-2 px-2.5 text-[11px] font-bold uppercase tracking-[0.07em] text-label">{g.label}</p>
+            {g.label && <p className="mb-2 px-2.5 text-[11px] font-bold uppercase tracking-[0.07em] text-label">{g.label}</p>}
             {g.items.map((m) => (
               <NavLink key={m.id} to={m.path} end={m.path === "/"} className="relative block">
                 {({ isActive }) => (

@@ -1,5 +1,5 @@
 import type { BadgeScan, IdVerification, Member } from "@o360/contracts";
-import { CommandError, defineServerModule, extensions, fileCollection, guard } from "@o360/server-kit";
+import { actorOf, CommandError, defineServerModule, extensions, fileCollection, guard, signedIn } from "@o360/server-kit";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -83,6 +83,11 @@ export default defineServerModule({
   ],
   routes(app) {
     app.get("/people", guard("people.member.view"), (c) => c.json(members.all().sort((a, b) => a.name.localeCompare(b.name))));
+    /** The signed-in person's own staff record, matched by email. Anyone signed in can see their own. */
+    app.get("/people/me", signedIn, (c) => {
+      const email = actorOf(c)?.email?.toLowerCase();
+      return c.json(members.all().find((m) => m.email.toLowerCase() === email && m.status !== "offboarded") ?? null);
+    });
     app.get("/people/:id", guard("people.member.view"), (c) => c.json(get(c.req.param("id"))));
     /** Public: what anyone scanning an ID card sees. Only current staff verify. */
     app.get("/verify/:staffNo", (c) => {

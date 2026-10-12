@@ -9,3 +9,4 @@ export * from "./Notify";
 export * from "./Confirm";
 export * from "./cx";
 export * from "./Switch";
+export * from "./Widget";

@@ -12,4 +12,5 @@ export default defineModule({
   permission: "automation.rule.view",
   order: 70,
   page: lazy(() => import("./AutomationsPage")),
+  widgets: [{ id: "activity", title: "Recent activity", span: 2, permission: "automation.rule.view", order: 40, component: lazy(() => import("./ActivityWidget")) }],
 });

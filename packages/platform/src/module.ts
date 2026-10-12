@@ -3,6 +3,17 @@ import type { ComponentType, LazyExoticComponent } from "react";
 export type Icon = ComponentType<{ className?: string; strokeWidth?: number }>;
 
 /** Frontend half of a module. The shell builds navigation, routes and the launcher from these. */
+/** A Home dashboard card. Any module can contribute; Home shows the ones the person can use. */
+export type Widget = {
+  id: string;
+  title: string;
+  /** Grid width: 1 = third, 2 = two thirds, 3 = full row (on desktop). */
+  span?: 1 | 2 | 3;
+  permission?: string;
+  order?: number;
+  component: LazyExoticComponent<ComponentType>;
+};
+
 export type ModuleManifest = {
   id: string;
   title: string;
@@ -15,8 +26,9 @@ export type ModuleManifest = {
   /** Permission needed to see the module at all. */
   permission?: string;
   page: LazyExoticComponent<ComponentType>;
-  /** Hidden from the launcher (e.g. Home itself). */
+  /** Hidden from the Apps section (e.g. Home itself). */
   launcher?: boolean;
+  widgets?: Widget[];
   notify?: Partial<Record<string, (payload: any) => string>>;
   order?: number;
 };

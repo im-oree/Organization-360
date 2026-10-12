@@ -1,12 +1,14 @@
 import { api, BrandMark, useAction, useAuth, useBrand } from "@o360/platform";
 import { Button, Field } from "@o360/ui";
 import { motion } from "motion/react";
-import type { FormEvent } from "react";
+import { useRef, type FormEvent } from "react";
+import { DemoAccounts } from "./DemoAccounts";
 
 export function SignIn() {
   const brand = useBrand();
   const { signIn } = useAuth();
   const { run, busy, fields } = useAction(signIn);
+  const form = useRef<HTMLFormElement>(null);
 
   function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,11 +23,19 @@ export function SignIn() {
           <BrandMark className="size-12 rounded-xl" />
           <h1 className="text-[22px] font-bold text-accent">Sign in to {brand.name}</h1>
         </div>
-        <form onSubmit={submit} className="space-y-4 rounded-brand border border-line bg-surface p-6 shadow-soft">
+        <form ref={form} onSubmit={submit} className="space-y-4 rounded-brand border border-line bg-surface p-6 shadow-soft">
           <Field label="Email" name="email" type="email" autoComplete="email" required autoFocus error={fields.email} />
           <Field label="Password" name="password" type="password" autoComplete="current-password" required error={fields.password} />
           <Button type="submit" disabled={busy} className="w-full">{busy ? "Signing in…" : "Sign in"}</Button>
         </form>
+        <DemoAccounts
+          onPick={(a) => {
+            const f = form.current!;
+            (f.elements.namedItem("email") as HTMLInputElement).value = a.email;
+            (f.elements.namedItem("password") as HTMLInputElement).value = a.password;
+            f.requestSubmit();
+          }}
+        />
       </motion.div>
     </main>
   );
