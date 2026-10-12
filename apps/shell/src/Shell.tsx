@@ -2,13 +2,17 @@ import { useAuth, useBrand, useCan, useEvents, type ModuleManifest } from "@o360
 import { Avatar, confirm, ConfirmHost, Notifications, notify } from "@o360/ui";
 import { LogOut, Menu, Moon, Sun } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink, Route, Routes, useLocation } from "react-router";
 import { modules } from "./modules";
 import { ChangePassword, SignIn } from "./SignIn";
 
+const Verify = lazy(() => import("@o360/module-people/verify"));
+
 export function Root() {
   const { me, ready } = useAuth();
+  const verify = location.pathname.match(/^\/verify\/([^/]+)/);
+  if (verify) return <Suspense fallback={null}><Verify staffNo={decodeURIComponent(verify[1]!)} /></Suspense>;
   if (!ready) return null;
   return (
     <>

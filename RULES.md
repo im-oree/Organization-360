@@ -10,6 +10,9 @@ Must read before any work in this repo, along with `docs/STANDARD.md` and `docs/
 - Every error is plain English: what happened and what to do next. Never blame the person, never show codes or jargon.
 - Nothing fails silently. Use `useAction`, `notify`, `confirm`, `<Field error>` and `<LoadError>`; never hand-roll alerts.
 
+## Naming
+- Never use another company's names or branding in product, code or docs. External projects are reference only, used sparingly.
+
 ## Interface
 - Backoffice design: navy primary, sidebar + breadcrumb shell, clean cards. Motion is quick and purposeful.
 - No clutter, no filler copy.

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Role } from "./identity";
-import { NewMember } from "./people";
+import { MemberPatch, NewMember } from "./people";
 
 /**
  * Command catalogue. Every state change in the platform is a command.
@@ -9,11 +9,15 @@ import { NewMember } from "./people";
  */
 export const CommandSchemas = {
   "people.member.create": NewMember,
+  "people.member.update": MemberPatch,
+  "people.member.activate": z.object({ id: z.string() }),
+  "people.member.offboard": z.object({ id: z.string() }),
   "people.member.remove": z.object({ id: z.string() }),
   "tasks.task.create": z.object({ title: z.string().min(1), source: z.string().default("manual") }),
   "tasks.task.toggle": z.object({ id: z.string() }),
   "identity.user.create": z.object({ name: z.string().min(1), email: z.email(), password: z.string().min(8), roleIds: z.array(z.string()) }),
   "identity.user.update": z.object({ id: z.string(), roleIds: z.array(z.string()).optional(), status: z.enum(["active", "suspended"]).optional() }),
+  "identity.user.suspend": z.object({ email: z.email() }),
   "identity.role.save": Role.partial({ id: true, system: true }),
   "identity.password.change": z.object({ current: z.string(), next: z.string().min(8) }),
 } as const;

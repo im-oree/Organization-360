@@ -22,14 +22,4 @@ export default defineServerModule({
       return next;
     },
   },
-  rules: [
-    {
-      id: "onboarding-task",
-      title: "New member → onboarding task",
-      enabled: true,
-      on: "people.member.created",
-      run: "tasks.task.create",
-      map: (m: { name: string }) => ({ title: `Onboard ${m.name}`, source: "automation" }),
-    },
-  ],
 });

@@ -7,7 +7,7 @@ Build order, and for each app: what we copy from suites, where we go further, an
 | # | App | Why this position |
 |---|---|---|
 | 1 | **Identity & Backoffice** | Everything depends on it: login, roles, staff records, app registry, audit. Proven design from the previous backoffice. |
-| 2 | **People & ZojaPass ID** | First real value. Staff directory, org chart, onboarding, digital ID cards. Already familiar to staff. |
+| 2 | **StaffDesk (People & Digital ID)** | First real value. Staff directory, org chart, onboarding, digital ID cards. Already familiar to staff. |
 | 3 | **Tasks & Projects** | Small, daily-use, and the landing spot for automations from every other app. |
 | 4 | **Calendar & Meetings** | Highest daily usage after chat. LiveKit handles media; we own scheduling, notes and actions. |
 | 5 | **Chat** | Retires Teams/Slack seats. Builds on identity and events. |
@@ -23,7 +23,7 @@ Build order, and for each app: what we copy from suites, where we go further, an
 - **Emits:** `identity.user.created`, `identity.user.suspended`, `identity.role.changed`.
 - **Connectors:** OIDC provider for external apps (Phase 2), SCIM for HR systems, LDAP bridge.
 
-## 2. People & ZojaPass
+## 2. StaffDesk (People & Digital ID)
 - **Parity:** directory, profiles, org chart, departments, onboarding/offboarding checklists (Workday, Zoho People).
 - **Better:** onboarding is a rule chain: create member → account → ID card → payroll record → tasks → welcome message, all visible and editable in Automations. Offboarding revokes everything in one command. Digital ID with QR verification page.
 - **Emits:** `people.member.created|updated|removed`, `people.member.onboarded`.

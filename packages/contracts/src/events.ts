@@ -9,6 +9,9 @@ import { Role, User } from "./identity";
  */
 export const EventSchemas = {
   "people.member.created": Member,
+  "people.member.updated": Member,
+  "people.member.activated": Member,
+  "people.member.offboarded": Member,
   "people.member.removed": z.object({ id: z.string() }),
   "tasks.task.created": Task,
   "tasks.task.updated": Task,

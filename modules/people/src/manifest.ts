@@ -4,13 +4,13 @@ import { lazy } from "react";
 
 export default defineModule({
   id: "people",
-  title: "Staff",
-  summary: "Directory of everyone in the organization",
+  title: "StaffDesk",
+  summary: "Directory, org chart, onboarding and ID cards",
   path: "/staff",
   icon: Users,
   area: "workspace",
   permission: "people.member.view",
   order: 2,
-  page: lazy(() => import("./PeoplePage")),
-  notify: { "people.member.created": (m) => `${m.name} joined` },
+  page: lazy(() => import("./StaffDesk")),
+  notify: { "people.member.created": (m) => `${m.name} was added and their onboarding checklist is ready` },
 });

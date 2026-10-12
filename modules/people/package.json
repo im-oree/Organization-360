@@ -3,8 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/manifest.ts", "./server": "./src/server.ts" },
-  "scripts": { "typecheck": "tsc -p ." },
+  "exports": {
+    ".": "./src/manifest.ts",
+    "./server": "./src/server.ts", "./verify": "./src/Verify.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  },
   "dependencies": {
     "@o360/contracts": "workspace:*",
     "@o360/platform": "workspace:*",
@@ -12,7 +17,13 @@
     "@o360/ui": "workspace:*",
     "lucide-react": "^0.542.0",
     "motion": "^12.23.12",
-    "react": "^19.1.1"
+    "qrcode": "^1.5.4",
+    "react": "^19.1.1",
+    "react-router": "^7.18.4"
   },
-  "devDependencies": { "@types/react": "^19.1.12", "@types/node": "^24.3.0" }
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.1.12"
+  }
 }

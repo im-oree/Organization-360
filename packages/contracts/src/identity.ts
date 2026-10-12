@@ -39,11 +39,14 @@ export function can(granted: readonly string[], key: string) {
 /** Catalogue of grantable permissions, used by the role editor. */
 export const PermissionCatalogue: { app: string; keys: { key: string; label: string }[] }[] = [
   {
-    app: "People",
+    app: "StaffDesk",
     keys: [
       { key: "people.member.view", label: "View directory" },
-      { key: "people.member.create", label: "Add members" },
-      { key: "people.member.remove", label: "Remove members" },
+      { key: "people.member.create", label: "Add people" },
+      { key: "people.member.update", label: "Edit profiles" },
+      { key: "people.member.activate", label: "Complete onboarding" },
+      { key: "people.member.offboard", label: "Offboard people" },
+      { key: "people.member.remove", label: "Delete records" },
     ],
   },
   {
@@ -60,6 +63,7 @@ export const PermissionCatalogue: { app: string; keys: { key: string; label: str
       { key: "identity.user.view", label: "View users" },
       { key: "identity.user.create", label: "Invite users" },
       { key: "identity.user.update", label: "Edit users" },
+      { key: "identity.user.suspend", label: "Pause accounts" },
       { key: "identity.role.view", label: "View roles" },
       { key: "identity.role.save", label: "Edit roles" },
     ],

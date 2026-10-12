@@ -86,6 +86,16 @@ export default defineServerModule({
     app.get("/roles", guard("identity.role.view"), (c) => c.json(roles.all()));
   },
   selfService: ["identity.password.change"],
+  rules: [
+    {
+      id: "offboard-signin",
+      title: "Offboarded → pause their sign-in",
+      enabled: true,
+      on: "people.member.offboarded",
+      run: "identity.user.suspend",
+      map: (m: { email: string }) => ({ email: m.email }),
+    },
+  ],
   commands: {
     "identity.user.create"({ name, email, password, roleIds }, { bus }) {
       const u = createUser(name, email, password, roleIds, true);
@@ -100,6 +110,15 @@ export default defineServerModule({
       if (roleIds?.includes("owner") && !actor.permissions.includes("*")) throw new CommandError("Only an owner can make someone else an owner.", 403);
       const next = users.put({ ...u, roleIds: roleIds ?? u.roleIds, status: status ?? u.status });
       if (status === "suspended") for (const s of sessions.all()) if (s.userId === id) sessions.remove(s.id);
+      bus.publish("identity.user.updated", next);
+      return next;
+    },
+    "identity.user.suspend"({ email }, { bus }) {
+      const u = findByEmail(email);
+      if (!u || u.status === "suspended") return { skipped: true };
+      if (u.roleIds.includes("owner")) throw new CommandError("Owner accounts aren't paused automatically. Pause it by hand if you're sure.", 409);
+      const next = users.put({ ...u, status: "suspended" });
+      for (const s of sessions.all()) if (s.userId === u.id) sessions.remove(s.id);
       bus.publish("identity.user.updated", next);
       return next;
     },

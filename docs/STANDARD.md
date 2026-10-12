@@ -36,9 +36,14 @@ A living profile of what we build and how. Every decision that proves right gets
 - Stores sit behind interfaces (`Collection`), buses behind `Bus`. Adapters change, call sites don't.
 - Prefer platform APIs (`node:crypto`, `fetch`, `EventSource`) over libraries.
 
+## Naming
+
+- Our own names for everything. Other companies' products are reference material only, never names, branding or copy.
+- Working names: StaffDesk for people management. Other app names are decided when we build them.
+
 ## Lessons carried over
 
-From the previous backoffice project:
+From earlier internal projects:
 - One schema for every list. Two shapes for the same data caused grants to be wiped.
 - When refreshing the signed-in user, replace permission fields, never merge, so revocations take effect.
 - Return 403 for forbidden actions, not 404.

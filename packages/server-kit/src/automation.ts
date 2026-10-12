@@ -2,6 +2,7 @@ import type { AutomationRule } from "@o360/contracts";
 import type { Bus } from "./bus";
 import { SYSTEM, type CommandRunner } from "./commands";
 
+/** `map` returns the command input, or a list of inputs to run the command once per item. */
 export type Rule = AutomationRule & { map: (payload: any) => unknown };
 
 /**
@@ -15,10 +16,14 @@ export function automations(bus: Bus, commands: CommandRunner) {
     for (const rule of rules.values()) {
       if (!rule.enabled || rule.on !== event.name) continue;
       let status: "ok" | "error" = "ok";
-      try {
-        await commands.run(rule.run, rule.map(event.payload), { ...SYSTEM, name: `Automation · ${rule.title}` }, `${rule.id}:${event.id}`);
-      } catch {
-        status = "error";
+      const mapped = rule.map(event.payload);
+      const inputs = Array.isArray(mapped) ? mapped : [mapped];
+      for (const [i, input] of inputs.entries()) {
+        try {
+          await commands.run(rule.run, input, { ...SYSTEM, name: `Automation · ${rule.title}` }, `${rule.id}:${event.id}:${i}`);
+        } catch {
+          status = "error";
+        }
       }
       bus.publish("automation.run.completed", { rule: rule.id, command: rule.run, status });
     }

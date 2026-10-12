@@ -17,3 +17,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+@media print {
+  aside.sticky, header, nav, [aria-live] { display: none !important; }
+  body { background: white; }
+  main { padding: 0 !important; }
+}
