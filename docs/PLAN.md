@@ -53,7 +53,11 @@ docs                  Plans and decisions
 - [x] Two reference modules: Home, People (end-to-end with events)
 - [x] Command runner (validation, idempotency keys, run log) and event→command automation rules
 - [ ] Postgres via Drizzle, migrations, seed data
-- [ ] Auth: OIDC (self-hosted Zitadel or Keycloak), sessions, roles
+- [x] Auth: sign-in, sessions, scrypt credentials, forced password change
+- [x] RBAC: roles, permission catalogue, server-side checks on every command and route, role editor
+- [x] Backoffice shell, app launcher, Users, Roles, Automations + activity log
+- [x] Plain-English errors, notification system, confirmations, global failure catch
+- [ ] OIDC provider so external apps can sign in with us
 - [ ] Tenancy: tenant id on every row, per-tenant brand
 - [ ] Docker Compose + CI (typecheck, test, build)
 

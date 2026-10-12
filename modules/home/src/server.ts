@@ -1,12 +1,12 @@
 import type { Task } from "@o360/contracts";
-import { CommandError, defineServerModule, fileCollection } from "@o360/server-kit";
+import { CommandError, defineServerModule, fileCollection, guard } from "@o360/server-kit";
 
 const tasks = fileCollection<Task>("tasks");
 
 export default defineServerModule({
   id: "home",
   routes(app) {
-    app.get("/tasks", (c) => c.json(tasks.all().sort((a, b) => b.createdAt.localeCompare(a.createdAt))));
+    app.get("/tasks", guard("tasks.task.view"), (c) => c.json(tasks.all().sort((a, b) => b.createdAt.localeCompare(a.createdAt))));
   },
   commands: {
     "tasks.task.create"({ title, source }, { bus }) {
@@ -16,7 +16,7 @@ export default defineServerModule({
     },
     "tasks.task.toggle"({ id }, { bus }) {
       const t = tasks.get(id);
-      if (!t) throw new CommandError("Not found", 404);
+      if (!t) throw new CommandError("We couldn't find that. It may have been removed by someone else. Refresh to see the latest.", 404);
       const next = tasks.put({ ...t, done: !t.done });
       bus.publish("tasks.task.updated", next);
       return next;

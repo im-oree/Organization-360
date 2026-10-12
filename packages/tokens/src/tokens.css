@@ -1,71 +1,65 @@
 /* Semantic tokens. Components use only these; brands override the --brand-* inputs. */
 :root {
-  --brand-accent: #0a84ff;
-  --brand-accent-dark: #409cff;
-  --brand-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, sans-serif;
-  --brand-radius: 14px;
+  --brand-accent: #002986;
+  --brand-accent-dark: #a7b8f7;
+  --brand-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, system-ui, sans-serif;
+  --brand-radius: 12px;
 
-  --o-bg: #f5f5f7;
-  --o-surface: rgba(255, 255, 255, 0.72);
-  --o-surface-solid: #ffffff;
-  --o-elevated: #ffffff;
-  --o-border: rgba(0, 0, 0, 0.08);
-  --o-text: #1d1d1f;
-  --o-text-muted: #6e6e73;
-  --o-fill: rgba(120, 120, 128, 0.12);
+  --o-bg: #f8f9fc;
+  --o-surface: #ffffff;
+  --o-border: #e5e7eb;
+  --o-text: #161a2e;
+  --o-text-muted: #6b7280;
+  --o-label: #8b91b5;
+  --o-fill: #f4f5fb;
+  --o-active: #eef0f9;
   --o-accent: var(--brand-accent);
   --o-accent-text: #ffffff;
-  --o-success: #34c759;
-  --o-danger: #ff3b30;
-  --o-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --o-accent-soft: #eef0fc;
+  --o-success: #16a34a;
+  --o-warning: #d97706;
+  --o-danger: #dc2626;
+  --o-shadow: 0 1px 2px rgba(0, 41, 134, 0.05), 0 1px 3px rgba(0, 41, 134, 0.07);
+  --o-shadow-lg: 0 6px 18px rgba(27, 37, 89, 0.1);
+  --o-ring: 0 0 0 3px color-mix(in srgb, var(--o-accent) 18%, transparent);
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --o-bg: #000000;
-    --o-surface: rgba(28, 28, 30, 0.72);
-    --o-surface-solid: #1c1c1e;
-    --o-elevated: #2c2c2e;
-    --o-border: rgba(255, 255, 255, 0.1);
-    --o-text: #f5f5f7;
-    --o-text-muted: #98989d;
-    --o-fill: rgba(120, 120, 128, 0.24);
-    --o-accent: var(--brand-accent-dark);
-    --o-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.4);
-    color-scheme: dark;
-  }
-}
-
 :root[data-theme="dark"] {
-  --o-bg: #000000;
-  --o-surface: rgba(28, 28, 30, 0.72);
-  --o-surface-solid: #1c1c1e;
-  --o-elevated: #2c2c2e;
-  --o-border: rgba(255, 255, 255, 0.1);
-  --o-text: #f5f5f7;
-  --o-text-muted: #98989d;
-  --o-fill: rgba(120, 120, 128, 0.24);
+  --o-bg: #0c111f;
+  --o-surface: #141a2d;
+  --o-border: #232a42;
+  --o-text: #e6e9f6;
+  --o-text-muted: #98a1c0;
+  --o-label: #7a83a6;
+  --o-fill: #1a2138;
+  --o-active: #1c2340;
   --o-accent: var(--brand-accent-dark);
-  --o-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.4);
+  --o-accent-text: #0c111f;
+  --o-accent-soft: #1c2340;
+  --o-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --o-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
   color-scheme: dark;
 }
 
-/* Tailwind v4: expose tokens as utilities (bg-surface, text-muted, rounded-brand, …). */
 @theme inline {
   --color-bg: var(--o-bg);
   --color-surface: var(--o-surface);
-  --color-surface-solid: var(--o-surface-solid);
-  --color-elevated: var(--o-elevated);
   --color-line: var(--o-border);
   --color-ink: var(--o-text);
   --color-muted: var(--o-text-muted);
+  --color-label: var(--o-label);
   --color-fill: var(--o-fill);
+  --color-active: var(--o-active);
   --color-accent: var(--o-accent);
   --color-on-accent: var(--o-accent-text);
+  --color-accent-soft: var(--o-accent-soft);
   --color-success: var(--o-success);
+  --color-warning: var(--o-warning);
   --color-danger: var(--o-danger);
   --font-sans: var(--brand-font-sans);
   --radius-brand: var(--brand-radius);
   --shadow-soft: var(--o-shadow);
+  --shadow-lift: var(--o-shadow-lg);
+  --shadow-ring: var(--o-ring);
 }

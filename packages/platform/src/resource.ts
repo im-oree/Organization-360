@@ -7,7 +7,7 @@ import { useEvents } from "./events";
 export function useResource<T>(path: string, refreshOn: EventName[] | string | null = null) {
   const [data, setData] = useState<T | undefined>();
   const [error, setError] = useState<Error | null>(null);
-  const reload = useCallback(() => api.get<T>(path).then(setData, setError), [path]);
+  const reload = useCallback(() => api.get<T>(path).then((d) => (setData(d), setError(null)), setError), [path]);
   useEffect(() => void reload(), [reload]);
   useEvents(refreshOn, () => void reload());
   return { data, error, loading: data === undefined && !error, reload };

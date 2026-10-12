@@ -1,16 +1,23 @@
-import { BrandProvider } from "@o360/platform";
+import { AuthProvider, BrandProvider, catchUnhandled } from "@o360/platform";
+import { MotionConfig } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router";
-import { Shell } from "./Shell";
+import { Root } from "./Shell";
 import "./styles.css";
+
+catchUnhandled();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrandProvider>
-      <BrowserRouter>
-        <Shell />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <MotionConfig reducedMotion="user">
+            <Root />
+          </MotionConfig>
+        </BrowserRouter>
+      </AuthProvider>
     </BrandProvider>
   </StrictMode>,
 );

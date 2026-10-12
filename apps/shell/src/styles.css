@@ -9,8 +9,11 @@ body {
   background: var(--o-bg);
   color: var(--o-text);
   font-family: var(--brand-font-sans);
+  font-size: 14px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.01em;
 }
-::selection { background: color-mix(in srgb, var(--o-accent) 25%, transparent); }
-:focus-visible { outline: 2px solid var(--o-accent); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--o-accent); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

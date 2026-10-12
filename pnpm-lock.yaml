@@ -20,6 +20,9 @@ importers:
       '@o360/module-home':
         specifier: workspace:*
         version: link:../../modules/home
+      '@o360/module-identity':
+        specifier: workspace:*
+        version: link:../../modules/identity
       '@o360/module-people':
         specifier: workspace:*
         version: link:../../modules/people
@@ -118,6 +121,43 @@ importers:
       react:
         specifier: ^19.1.1
         version: 19.3.0
+      react-router:
+        specifier: ^7.8.2
+        version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.19.2
+      '@types/react':
+        specifier: ^19.1.12
+        version: 19.3.0
+
+  modules/identity:
+    dependencies:
+      '@o360/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@o360/platform':
+        specifier: workspace:*
+        version: link:../../packages/platform
+      '@o360/server-kit':
+        specifier: workspace:*
+        version: link:../../packages/server-kit
+      '@o360/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      hono:
+        specifier: ^4.13.13
+        version: 4.13.13
+      lucide-react:
+        specifier: ^0.542.0
+        version: 0.542.0(react@19.3.0)
+      motion:
+        specifier: ^12.23.12
+        version: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react:
+        specifier: ^19.1.1
+        version: 19.3.0
     devDependencies:
       '@types/node':
         specifier: ^24.3.0
@@ -171,6 +211,9 @@ importers:
       '@o360/tokens':
         specifier: workspace:*
         version: link:../tokens
+      '@o360/ui':
+        specifier: workspace:*
+        version: link:../ui
       react:
         specifier: ^19.1.1
         version: 19.3.0
@@ -205,6 +248,9 @@ importers:
       '@o360/tokens':
         specifier: workspace:*
         version: link:../tokens
+      lucide-react:
+        specifier: ^0.542.0
+        version: 0.542.0(react@19.3.0)
       motion:
         specifier: ^12.23.12
         version: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -233,6 +279,9 @@ importers:
       '@o360/module-home':
         specifier: workspace:*
         version: link:../../modules/home
+      '@o360/module-identity':
+        specifier: workspace:*
+        version: link:../../modules/identity
       '@o360/module-people':
         specifier: workspace:*
         version: link:../../modules/people

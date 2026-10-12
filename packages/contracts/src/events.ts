@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Member } from "./people";
 import { Task } from "./tasks";
+import { Role, User } from "./identity";
 
 /**
  * Event catalogue. Every cross-module signal is declared here once.
@@ -11,6 +12,9 @@ export const EventSchemas = {
   "people.member.removed": z.object({ id: z.string() }),
   "tasks.task.created": Task,
   "tasks.task.updated": Task,
+  "identity.user.created": User,
+  "identity.user.updated": User,
+  "identity.role.saved": Role,
   "automation.run.completed": z.object({ rule: z.string(), command: z.string(), status: z.enum(["ok", "error"]) }),
 } as const;
 

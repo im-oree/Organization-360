@@ -5,6 +5,7 @@
   "type": "module",
   "exports": { ".": "./src/index.ts" },
   "scripts": { "typecheck": "tsc -p ." },
-  "dependencies": { "@o360/tokens": "workspace:*", "motion": "^12.23.12", "react": "^19.1.1", "react-dom": "^19.1.1" },
+  "dependencies": { "@o360/tokens": "workspace:*", "lucide-react": "^0.542.0",
+    "motion": "^12.23.12", "react": "^19.1.1", "react-dom": "^19.1.1" },
   "devDependencies": { "@types/react": "^19.1.12", "@types/react-dom": "^19.1.9" }
 }

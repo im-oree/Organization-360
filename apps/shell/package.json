@@ -12,6 +12,7 @@
   "dependencies": {
     "@o360/module-automations": "workspace:*",
     "@o360/module-home": "workspace:*",
+    "@o360/module-identity": "workspace:*",
     "@o360/module-people": "workspace:*",
     "@o360/platform": "workspace:*",
     "@o360/tokens": "workspace:*",

@@ -5,6 +5,7 @@
   "type": "module",
   "exports": { ".": "./src/index.ts" },
   "scripts": { "typecheck": "tsc -p ." },
-  "dependencies": { "@o360/contracts": "workspace:*", "@o360/tokens": "workspace:*", "react": "^19.1.1", "zod": "^4.1.5" },
+  "dependencies": { "@o360/contracts": "workspace:*", "@o360/tokens": "workspace:*",
+    "@o360/ui": "workspace:*", "react": "^19.1.1", "zod": "^4.1.5" },
   "devDependencies": { "@types/react": "^19.1.12" }
 }

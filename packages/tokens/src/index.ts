@@ -11,15 +11,15 @@ export const defaultBrand: Brand = {
   name: "Organization 360",
   shortName: "O360",
   logo: "/brand/logo.svg",
-  colors: { accent: "#0A84FF", accentDark: "#409CFF" },
-  radius: 14,
+  colors: { accent: "#002986", accentDark: "#A7B8F7" },
+  radius: 12,
 };
 
 /** Spring presets shared by every animated surface. */
 export const motion = {
-  spring: { type: "spring", stiffness: 380, damping: 32, mass: 0.8 },
-  gentle: { type: "spring", stiffness: 220, damping: 28 },
-  ease: [0.32, 0.72, 0, 1] as const,
+  spring: { type: "spring", stiffness: 420, damping: 34, mass: 0.7 },
+  gentle: { type: "spring", stiffness: 260, damping: 30 },
+  ease: [0.22, 0.61, 0.36, 1] as const,
 } as const;
 
 /** Applies a brand to the document as CSS variables. Safe to call at any time. */

@@ -5,8 +5,11 @@ import { lazy } from "react";
 export default defineModule({
   id: "automations",
   title: "Automations",
-  path: "/automations",
+  summary: "Rules that run work for you, and the activity log",
+  path: "/admin/automations",
   icon: Zap,
-  order: 90,
+  area: "admin",
+  permission: "automation.rule.view",
+  order: 70,
   page: lazy(() => import("./AutomationsPage")),
 });

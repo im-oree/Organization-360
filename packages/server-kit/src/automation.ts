@@ -1,6 +1,6 @@
 import type { AutomationRule } from "@o360/contracts";
 import type { Bus } from "./bus";
-import type { CommandRunner } from "./commands";
+import { SYSTEM, type CommandRunner } from "./commands";
 
 export type Rule = AutomationRule & { map: (payload: any) => unknown };
 
@@ -16,7 +16,7 @@ export function automations(bus: Bus, commands: CommandRunner) {
       if (!rule.enabled || rule.on !== event.name) continue;
       let status: "ok" | "error" = "ok";
       try {
-        await commands.run(rule.run, rule.map(event.payload), `automation:${rule.id}`, `${rule.id}:${event.id}`);
+        await commands.run(rule.run, rule.map(event.payload), { ...SYSTEM, name: `Automation · ${rule.title}` }, `${rule.id}:${event.id}`);
       } catch {
         status = "error";
       }

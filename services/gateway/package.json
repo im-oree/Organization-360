@@ -12,6 +12,7 @@
     "@hono/node-server": "^1.19.1",
     "@o360/contracts": "workspace:*",
     "@o360/module-home": "workspace:*",
+    "@o360/module-identity": "workspace:*",
     "@o360/module-people": "workspace:*",
     "@o360/server-kit": "workspace:*",
     "hono": "^4.9.6",

@@ -2,12 +2,6 @@
   "name": "Organization 360",
   "shortName": "O360",
   "logo": "/brand/logo.svg",
-  "colors": {
-    "accent": "#0A84FF",
-    "accentDark": "#409CFF"
-  },
-  "font": {
-    "sans": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"Inter\", \"Segoe UI\", system-ui, sans-serif"
-  },
-  "radius": 14
+  "colors": { "accent": "#002986", "accentDark": "#A7B8F7" },
+  "radius": 12
 }

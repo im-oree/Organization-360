@@ -3,3 +3,5 @@ export * from "./events";
 export * from "./resource";
 export * from "./module";
 export * from "./brand";
+export * from "./auth";
+export * from "./action";
