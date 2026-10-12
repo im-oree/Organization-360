@@ -1,5 +1,5 @@
 import type { IdVerification } from "@o360/contracts";
-import { api, useBrand } from "@o360/platform";
+import { api, BrandMark, useBrand } from "@o360/platform";
 import { CircleCheck, CircleX } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ export default function Verify({ staffNo }: { staffNo: string }) {
   return (
     <main className="grid min-h-full place-items-center p-4">
       <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-sm rounded-brand border border-line bg-surface p-8 text-center shadow-soft">
-        <img src={brand.logo} alt={brand.name} className="mx-auto mb-6 size-10 rounded-lg" />
+        <div className="mb-6 flex justify-center"><BrandMark className="size-10 rounded-lg" /></div>
         {failed ? (
           <p className="text-[14px] text-muted">We couldn't check this ID right now. Check your connection and scan again.</p>
         ) : !result ? null : result.valid ? (

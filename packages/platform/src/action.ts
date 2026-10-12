@@ -24,7 +24,7 @@ export function useAction<A extends unknown[], R>(fn: (...args: A) => Promise<R>
       } catch (e) {
         const err = e instanceof ApiError ? e : new ApiError("Something unexpected happened. Try again, and tell us if it keeps happening.", 0);
         setFields(err.fields);
-        if (err.status !== 401) notify.error(err.message);
+        notify.error(err.message);
       } finally {
         setBusy(false);
       }

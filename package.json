@@ -7,9 +7,11 @@
     "dev": "pnpm --parallel --filter @o360/gateway --filter @o360/shell dev",
     "build": "pnpm --filter @o360/shell build",
     "start": "pnpm --filter @o360/gateway start",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "test:e2e": "node tests/e2e/smoke.mjs"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "playwright-core": "1.55.0"
   }
 }

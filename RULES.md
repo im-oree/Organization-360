@@ -14,6 +14,10 @@ Must read before any work in this repo, along with `docs/STANDARD.md` and `docs/
 ## Naming
 - Never use another company's names or branding in product, code or docs. External projects are reference only, used sparingly.
 
+## Verification
+- Test what the person sees, not just the API. Run `pnpm test:e2e` (real Chrome) before every commit that touches the UI, and add a check for each new flow.
+- A failure the user hits must never be silent. If one is found, fix the cause and add a test that would have caught it.
+
 ## Interface
 - Backoffice design: navy primary, sidebar + breadcrumb shell, clean cards. Motion is quick and purposeful.
 - No clutter, no filler copy.

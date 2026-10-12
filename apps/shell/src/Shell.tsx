@@ -1,4 +1,4 @@
-import { useAuth, useBrand, useCan, useEvents, type ModuleManifest } from "@o360/platform";
+import { BrandMark, useAuth, useBrand, useCan, useEvents, type ModuleManifest } from "@o360/platform";
 import { Avatar, confirm, ConfirmHost, Notifications, notify } from "@o360/ui";
 import { LogOut, Menu, Moon, Sun } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -98,7 +98,7 @@ function Sidebar({ items }: { items: ModuleManifest[] }) {
   return (
     <div className="flex h-full flex-col">
       <Link to="/" className="flex min-h-[88px] items-center gap-3 border-b border-line px-6">
-        <img src={brand.logo} alt="" className="size-8 rounded-lg" />
+        <BrandMark />
         <span className="min-w-0">
           <span className="block truncate text-[15px] font-bold text-accent">{brand.name}</span>
           <span className="block text-[9px] font-semibold uppercase tracking-[0.22em] text-label">Backoffice</span>

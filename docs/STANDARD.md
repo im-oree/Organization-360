@@ -61,4 +61,6 @@ From earlier internal projects:
 - One schema for every list. Two shapes for the same data caused grants to be wiped.
 - When refreshing the signed-in user, replace permission fields, never merge, so revocations take effect.
 - Return 403 for forbidden actions, not 404.
+- Errors were once hidden on 401, which silenced wrong-password messages. Never filter which errors a person sees.
+- Password fields always have a show/hide toggle.
 - No hard-coded brand data in components.

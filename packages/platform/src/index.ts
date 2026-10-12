@@ -6,3 +6,4 @@ export * from "./brand";
 export * from "./auth";
 export * from "./action";
 export * from "./catalogue";
+export * from "./BrandMark";

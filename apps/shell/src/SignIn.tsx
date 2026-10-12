@@ -1,4 +1,4 @@
-import { api, useAction, useAuth, useBrand } from "@o360/platform";
+import { api, BrandMark, useAction, useAuth, useBrand } from "@o360/platform";
 import { Button, Field } from "@o360/ui";
 import { motion } from "motion/react";
 import type { FormEvent } from "react";
@@ -18,7 +18,7 @@ export function SignIn() {
     <main className="grid min-h-full place-items-center p-4">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-[380px]">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
-          <img src={brand.logo} alt={brand.name} className="size-12 rounded-xl" />
+          <BrandMark className="size-12 rounded-xl" />
           <h1 className="text-[22px] font-bold text-accent">Sign in to {brand.name}</h1>
         </div>
         <form onSubmit={submit} className="space-y-4 rounded-brand border border-line bg-surface p-6 shadow-soft">
