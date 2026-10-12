@@ -1,7 +1,6 @@
 import type { AutomationRule, RunRecord } from "@o360/contracts";
 import { api, useAction, useCan, useResource } from "@o360/platform";
-import { Card, Chip, Empty, LoadError, Page } from "@o360/ui";
-import { motion } from "motion/react";
+import { Card, Chip, Empty, LoadError, Page, Switch } from "@o360/ui";
 
 export default function AutomationsPage() {
   const can = useCan();
@@ -42,20 +41,5 @@ export default function AutomationsPage() {
         )}
       </Card>
     </Page>
-  );
-}
-
-function Switch({ on, onChange, label, disabled }: { on: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
-  return (
-    <button
-      role="switch"
-      aria-checked={on}
-      aria-label={label}
-      disabled={disabled}
-      onClick={() => onChange(!on)}
-      className={`relative h-[31px] w-[51px] shrink-0 rounded-full transition-colors ${on ? "bg-success" : "bg-line"} disabled:opacity-50`}
-    >
-      <motion.span layout transition={{ type: "spring", stiffness: 500, damping: 34 }} className={`absolute top-[2px] size-[27px] rounded-full bg-white shadow ${on ? "right-[2px]" : "left-[2px]"}`} />
-    </button>
   );
 }

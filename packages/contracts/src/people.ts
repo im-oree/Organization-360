@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ExtValues } from "./extensions";
 
 export const MemberStatus = z.enum(["onboarding", "active", "offboarded"]);
 
@@ -15,6 +16,7 @@ export const Member = z.object({
   status: MemberStatus.default("onboarding"),
   startDate: z.iso.date(),
   joinedAt: z.iso.datetime(),
+  ext: ExtValues.default({}),
 });
 export type Member = z.infer<typeof Member>;
 
@@ -27,6 +29,7 @@ const editable = {
   location: z.string().max(80),
   managerId: z.string().nullable(),
   startDate: z.iso.date(),
+  ext: ExtValues,
 };
 
 /** Fields a person can provide when adding someone. */
@@ -36,6 +39,7 @@ export const NewMember = z.object({
   location: editable.location.default(""),
   managerId: editable.managerId.default(null),
   startDate: editable.startDate.optional(),
+  ext: editable.ext.default({}),
 });
 export type NewMember = z.infer<typeof NewMember>;
 
@@ -44,3 +48,5 @@ export const MemberPatch = z.object(editable).partial().extend({ id: z.string() 
 
 /** Public result of scanning an ID card. Deliberately minimal. */
 export type IdVerification = { valid: boolean; name?: string; title?: string; department?: string; staffNo?: string; organization?: string };
+
+export type BadgeScan = { granted: boolean; name?: string; staffNo?: string; reason?: string };

@@ -5,6 +5,14 @@ const tasks = fileCollection<Task>("tasks");
 
 export default defineServerModule({
   id: "home",
+  app: {
+    title: "Tasks",
+    permissions: [
+      { key: "tasks.task.view", label: "View tasks" },
+      { key: "tasks.task.create", label: "Create tasks" },
+      { key: "tasks.task.toggle", label: "Complete tasks" },
+    ],
+  },
   routes(app) {
     app.get("/tasks", guard("tasks.task.view"), (c) => c.json(tasks.all().sort((a, b) => b.createdAt.localeCompare(a.createdAt))));
   },

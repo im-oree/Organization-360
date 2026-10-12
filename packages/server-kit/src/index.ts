@@ -1,5 +1,6 @@
 import { can } from "@o360/contracts";
 import type { Context, Hono, MiddlewareHandler } from "hono";
+import type { AppDef, ExtensionDef } from "@o360/contracts";
 import type { Rule } from "./automation";
 import type { Bus } from "./bus";
 import { CommandError, type Actor, type Handlers } from "./commands";
@@ -8,6 +9,7 @@ export * from "./bus";
 export * from "./commands";
 export * from "./automation";
 export * from "./store";
+export * from "./extensions";
 
 export type Env = { Variables: { actor: Actor } };
 
@@ -32,6 +34,10 @@ export const actorOf = (c: Context<Env>) => c.get("actor");
 /** Backend half of a module: read routes, commands it owns, automations it ships. */
 export type ServerModule = {
   id: string;
+  /** Title and grantable permissions. Feeds the role editor; no central list to maintain. */
+  app?: Omit<AppDef, "id">;
+  /** Optional add-ons other teams can switch on without code changes. */
+  extensions?: ExtensionDef[];
   routes?: (app: Hono<Env>, deps: { bus: Bus }) => void;
   commands?: Handlers;
   /** Commands any signed-in user may run on their own behalf. */

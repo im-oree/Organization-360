@@ -5,3 +5,4 @@ export * from "./module";
 export * from "./brand";
 export * from "./auth";
 export * from "./action";
+export * from "./catalogue";

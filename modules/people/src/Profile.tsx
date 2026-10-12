@@ -1,5 +1,5 @@
 import type { Member } from "@o360/contracts";
-import { api, useAction, useCan } from "@o360/platform";
+import { api, ExtensionValues, useAction, useCan } from "@o360/platform";
 import { Avatar, Button, Card, confirm, Empty } from "@o360/ui";
 import { ArrowLeft, Printer } from "lucide-react";
 import { motion } from "motion/react";
@@ -63,6 +63,7 @@ export function Profile({ people }: { people: Member[] }) {
               <Detail label="Office">{m.location || "—"}</Detail>
               <Detail label="Started">{new Date(m.startDate).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}</Detail>
               <Detail label="Manager">{manager ? <Link to={`/staff/${manager.id}`} className="text-accent hover:underline">{manager.name}</Link> : "—"}</Detail>
+              <ExtensionValues app="people" values={m.ext} />
             </dl>
           </Card>
 

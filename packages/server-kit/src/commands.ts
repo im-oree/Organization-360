@@ -11,7 +11,7 @@ export type Handler<N extends CommandName> = (input: CommandInput<N>, ctx: Ctx) 
 export type Handlers = { [N in CommandName]?: Handler<N> };
 
 export class CommandError extends Error {
-  constructor(message: string, readonly status = 400) {
+  constructor(message: string, readonly status = 400, readonly fields?: Record<string, string>) {
     super(message);
   }
 }

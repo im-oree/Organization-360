@@ -8,3 +8,4 @@ export * from "./Page";
 export * from "./Notify";
 export * from "./Confirm";
 export * from "./cx";
+export * from "./Switch";

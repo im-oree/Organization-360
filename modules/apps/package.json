@@ -1,0 +1,17 @@
+{
+  "name": "@o360/module-apps",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/manifest.ts" },
+  "scripts": { "typecheck": "tsc -p ." },
+  "dependencies": {
+    "@o360/contracts": "workspace:*",
+    "@o360/platform": "workspace:*",
+    "@o360/ui": "workspace:*",
+    "lucide-react": "^0.542.0",
+    "motion": "^12.23.12",
+    "react": "^19.1.1"
+  },
+  "devDependencies": { "@types/react": "^19.1.12", "@types/node": "^24.3.0" }
+}

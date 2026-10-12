@@ -57,6 +57,8 @@ docs                  Plans and decisions
 - [x] RBAC: roles, permission catalogue, server-side checks on every command and route, role editor
 - [x] Backoffice shell, app launcher, Users, Roles, Automations + activity log
 - [x] Plain-English errors, notification system, confirmations, global failure catch
+- [x] StaffDesk: directory, profiles, org chart, onboarding/offboarding, digital ID + public verify
+- [x] App catalogue and extension system (one FieldDef schema), Apps & extensions admin page
 - [ ] OIDC provider so external apps can sign in with us
 - [ ] Tenancy: tenant id on every row, per-tenant brand
 - [ ] Docker Compose + CI (typecheck, test, build)

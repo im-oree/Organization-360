@@ -29,6 +29,20 @@ A living profile of what we build and how. Every decision that proves right gets
 - Every command run is audited with the actor.
 - Automations run as a `system` actor with full rights, and their runs are audited the same way.
 
+## Apps and extensions (one schema)
+
+Everything pluggable is described by data, so adding capability is configuration, not rework.
+
+- **App:** a module declares `app: { title, permissions }` in its server half. The role editor, launcher and access checks read it from `/api/catalogue`. There is no central list to edit.
+- **Extension:** an optional add-on to an app, declared as `ExtensionDef { id, app, title, summary, fields, settings, permissions }`. Admins switch it on in Apps & extensions.
+  - `fields` are extra values on each record, stored at `record.ext[extensionId]`, rendered and validated generically.
+  - `settings` are organization-wide values for the extension.
+  - `permissions` appear in the role editor while the extension is on.
+  - Switching an extension off hides it and keeps its data.
+- **FieldDef** is the single field schema (text, url, email, tel, select, with hint, options, link template, max length). Forms, profile display and server validation all come from it.
+- **Hardware and connectors** are extensions plus a command. Example: the Badge and NFC extension adds a tag ID field and `people.badge.scan`, which readers call with their own reader account. Every scan becomes a `people.badge.scanned` event that automations can use.
+- Shipped StaffDesk extensions: LinkedIn profiles, GitHub accounts, Badge and NFC readers.
+
 ## Code
 
 - Contracts first: add the schema, event and command to `packages/contracts`, then implement.

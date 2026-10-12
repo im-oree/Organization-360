@@ -11,7 +11,7 @@ const SESSION_DAYS = 14;
 
 const roles = fileCollection<Role>("roles", [
   { id: "owner", name: "Owner", permissions: ["*"], system: true },
-  { id: "admin", name: "Administrator", permissions: ["people.*", "tasks.*", "identity.*", "automation.*"], system: false },
+  { id: "admin", name: "Administrator", permissions: ["people.*", "tasks.*", "identity.*", "automation.*", "platform.*"], system: false },
   { id: "member", name: "Member", permissions: ["people.member.view", "tasks.task.view", "tasks.task.create", "tasks.task.toggle"], system: true },
 ]);
 const users = fileCollection<User>("users");
@@ -58,6 +58,17 @@ export { SESSION_COOKIE };
 
 export default defineServerModule({
   id: "identity",
+  app: {
+    title: "Access",
+    permissions: [
+      { key: "identity.user.view", label: "View users" },
+      { key: "identity.user.create", label: "Invite users" },
+      { key: "identity.user.update", label: "Edit users" },
+      { key: "identity.user.suspend", label: "Pause accounts" },
+      { key: "identity.role.view", label: "View roles" },
+      { key: "identity.role.save", label: "Edit roles" },
+    ],
+  },
   routes(app) {
     app.post("/auth/login", async (c) => {
       const { email, password } = Login.parse(await c.req.json());

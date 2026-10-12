@@ -10,6 +10,7 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
+    "@o360/module-apps": "workspace:*",
     "@o360/module-automations": "workspace:*",
     "@o360/module-home": "workspace:*",
     "@o360/module-identity": "workspace:*",

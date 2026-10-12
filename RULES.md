@@ -4,6 +4,7 @@ Must read before any work in this repo, along with `docs/STANDARD.md` and `docs/
 
 ## Git
 - Commit messages never include a `Co-Authored-By` line or any AI attribution. PR descriptions don't either.
+- Commit after every phase and every completed piece of work, once it typechecks and is tested. Small, descriptive commits; never leave finished work uncommitted.
 
 ## User-friendliness (top priority)
 - Follow `docs/UX.md` on every screen.

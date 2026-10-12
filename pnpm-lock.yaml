@@ -14,6 +14,9 @@ importers:
 
   apps/shell:
     dependencies:
+      '@o360/module-apps':
+        specifier: workspace:*
+        version: link:../../modules/apps
       '@o360/module-automations':
         specifier: workspace:*
         version: link:../../modules/automations
@@ -69,6 +72,34 @@ importers:
       vite:
         specifier: ^7.1.4
         version: 7.3.7(@types/node@24.19.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15)
+
+  modules/apps:
+    dependencies:
+      '@o360/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@o360/platform':
+        specifier: workspace:*
+        version: link:../../packages/platform
+      '@o360/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      lucide-react:
+        specifier: ^0.542.0
+        version: 0.542.0(react@19.3.0)
+      motion:
+        specifier: ^12.23.12
+        version: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react:
+        specifier: ^19.1.1
+        version: 19.3.0
+    devDependencies:
+      '@types/node':
+        specifier: ^24.3.0
+        version: 24.19.2
+      '@types/react':
+        specifier: ^19.1.12
+        version: 19.3.0
 
   modules/automations:
     dependencies:

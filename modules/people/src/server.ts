@@ -1,5 +1,5 @@
-import type { IdVerification, Member } from "@o360/contracts";
-import { CommandError, defineServerModule, fileCollection, guard } from "@o360/server-kit";
+import type { BadgeScan, IdVerification, Member } from "@o360/contracts";
+import { CommandError, defineServerModule, extensions, fileCollection, guard } from "@o360/server-kit";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -10,8 +10,11 @@ const members = fileCollection<Member>("people", [
   seed(4, "Chidi Okafor", "chidi@example.com", "Software Engineer", "Engineering", "s2", "active", "2025-06-02"),
 ]);
 
+// Bring records saved by earlier versions up to the current shape.
+for (const m of members.all()) if (!m.ext) members.put({ ...m, ext: {} });
+
 function seed(n: number, name: string, email: string, title: string, department: string, managerId: string | null, status: Member["status"], startDate: string): Member {
-  return { id: `s${n}`, staffNo: staffNo(n), name, email, phone: "", title, department, location: "Lagos", managerId, status, startDate, joinedAt: `${startDate}T09:00:00.000Z` };
+  return { id: `s${n}`, staffNo: staffNo(n), name, email, phone: "", title, department, location: "Lagos", managerId, status, startDate, joinedAt: `${startDate}T09:00:00.000Z`, ext: {} };
 }
 function staffNo(n: number) {
   return `S-${String(n).padStart(4, "0")}`;
@@ -40,6 +43,44 @@ function checkManager(managerId: string | null | undefined, self?: string) {
 
 export default defineServerModule({
   id: "people",
+  app: {
+    title: "StaffDesk",
+    permissions: [
+      { key: "people.member.view", label: "View directory" },
+      { key: "people.member.create", label: "Add people" },
+      { key: "people.member.update", label: "Edit profiles" },
+      { key: "people.member.activate", label: "Complete onboarding" },
+      { key: "people.member.offboard", label: "Offboard people" },
+      { key: "people.member.remove", label: "Delete records" },
+    ],
+  },
+  extensions: [
+    {
+      id: "linkedin",
+      app: "people",
+      title: "LinkedIn profiles",
+      summary: "Show each person's LinkedIn on their profile.",
+      fields: [{ key: "url", label: "LinkedIn profile", type: "url", placeholder: "https://linkedin.com/in/…", linkTemplate: "{value}" }],
+      settings: [],
+    },
+    {
+      id: "github",
+      app: "people",
+      title: "GitHub accounts",
+      summary: "Link people to their GitHub username.",
+      fields: [{ key: "username", label: "GitHub username", type: "text", max: 39, linkTemplate: "https://github.com/{value}" }],
+      settings: [{ key: "org", label: "GitHub organization", type: "text", hint: "Used for future team sync." }],
+    },
+    {
+      id: "badge",
+      app: "people",
+      title: "Badge and NFC readers",
+      summary: "Give each person a badge or NFC tag ID and let door or desk readers check it.",
+      fields: [{ key: "uid", label: "Badge or NFC tag ID", type: "text", max: 64, hint: "Printed on the badge or read from the tag." }],
+      settings: [{ key: "devices", label: "Reader names", type: "text", hint: "Comma-separated, for example Front door, Lab." }],
+      permissions: [{ key: "people.badge.scan", label: "Check badges (for reader accounts)" }],
+    },
+  ],
   routes(app) {
     app.get("/people", guard("people.member.view"), (c) => c.json(members.all().sort((a, b) => a.name.localeCompare(b.name))));
     app.get("/people/:id", guard("people.member.view"), (c) => c.json(get(c.req.param("id"))));
@@ -54,7 +95,7 @@ export default defineServerModule({
     "people.member.create"(input, { bus }) {
       checkEmail(input.email);
       checkManager(input.managerId);
-      const member = members.put({ ...input, startDate: input.startDate ?? today(), id: crypto.randomUUID(), staffNo: nextStaffNo(), status: "onboarding", joinedAt: new Date().toISOString() });
+      const member = members.put({ ...input, ext: extensions.clean("people", input.ext), startDate: input.startDate ?? today(), id: crypto.randomUUID(), staffNo: nextStaffNo(), status: "onboarding", joinedAt: new Date().toISOString() });
       bus.publish("people.member.created", member);
       return member;
     },
@@ -62,7 +103,7 @@ export default defineServerModule({
       const m = get(id);
       if (patch.email) checkEmail(patch.email, id);
       if (patch.managerId !== undefined) checkManager(patch.managerId, id);
-      const next = members.put({ ...m, ...patch });
+      const next = members.put({ ...m, ...patch, ext: extensions.clean("people", patch.ext, m.ext) });
       bus.publish("people.member.updated", next);
       return next;
     },
@@ -81,6 +122,14 @@ export default defineServerModule({
       const next = members.put({ ...m, status: "offboarded", managerId: null });
       bus.publish("people.member.offboarded", next);
       return next;
+    },
+    /** Called by door or desk readers. Returns a decision and records every scan as an event. */
+    "people.badge.scan"({ uid, device }, { bus }): BadgeScan {
+      if (!extensions.enabled("badge")) throw new CommandError("Badge readers are switched off. Turn on the Badge and NFC extension first.", 409);
+      const m = members.all().find((x) => x.ext.badge?.uid === uid);
+      const granted = !!m && m.status !== "offboarded";
+      bus.publish("people.badge.scanned", { memberId: m?.id ?? null, uid, device, granted });
+      return granted ? { granted, name: m!.name, staffNo: m!.staffNo } : { granted, reason: m ? "This badge belongs to someone who has left." : "This badge isn't registered to anyone." };
     },
     "people.member.remove"({ id }, { bus }) {
       const m = get(id);

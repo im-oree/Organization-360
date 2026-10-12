@@ -2,9 +2,9 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import { CommandRequest, friendlyIssues, type RunRecord } from "@o360/contracts";
+import { CommandRequest, friendlyIssues, type AppDef, type Catalogue, type RunRecord } from "@o360/contracts";
 import { authenticate, SESSION_COOKIE, tokenFrom } from "@o360/module-identity/server";
-import { actorOf, automations, commandRunner, CommandError, fileCollection, guard, memoryBus, signedIn, type Env } from "@o360/server-kit";
+import { actorOf, automations, extensions, commandRunner, CommandError, fileCollection, guard, memoryBus, signedIn, type Env } from "@o360/server-kit";
 import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 import { streamSSE } from "hono/streaming";
@@ -28,11 +28,40 @@ api.use(async (c, next) => {
   await next();
 });
 
+const apps: AppDef[] = [];
 for (const m of modules) {
+  if (m.app) apps.push({ id: m.id, ...m.app });
+  m.extensions?.forEach(extensions.define);
   m.routes?.(api, { bus });
   if (m.commands) commands.register(m.commands, m.selfService);
   m.rules?.forEach(rules.add);
 }
+
+/** Platform-owned pieces: the app catalogue and extension switches. */
+apps.push({
+  id: "platform",
+  title: "Platform",
+  permissions: [
+    { key: "automation.rule.view", label: "View automations and activity" },
+    { key: "automation.rule.toggle", label: "Turn automations on or off" },
+    { key: "platform.extension.save", label: "Turn extensions on or off" },
+  ],
+});
+commands.register({
+  "platform.extension.save"(input, { bus }) {
+    const s = extensions.save(input);
+    bus.publish("platform.extension.saved", { id: s.id, enabled: s.enabled });
+    return s;
+  },
+});
+api.get("/catalogue", signedIn, (c) => {
+  const exts = extensions.all();
+  const body: Catalogue = {
+    apps: apps.map((a) => ({ ...a, permissions: [...a.permissions, ...exts.filter((e) => e.app === a.id && e.enabled).flatMap((e) => e.permissions ?? [])] })),
+    extensions: exts,
+  };
+  return c.json(body);
+});
 
 api.get("/health", (c) => c.json({ ok: true, modules: modules.map((m) => m.id) }));
 api.get("/brand", (c) => c.json(JSON.parse(readFileSync(resolve(brandDir, "brand.json"), "utf8"))));
@@ -62,7 +91,7 @@ api.get("/events", signedIn, (c) =>
 
 api.onError((err, c) => {
   if (err instanceof ZodError) return c.json(friendlyIssues(err.issues), 422);
-  if (err instanceof CommandError) return c.json({ error: err.message }, err.status as 400);
+  if (err instanceof CommandError) return c.json({ error: err.message, fields: err.fields }, err.status as 400);
   if (err instanceof SyntaxError) return c.json({ error: "The request couldn't be read. Refresh the page and try again." }, 400);
   console.error(err);
   return c.json({ error: "Something went wrong on our side, so nothing was saved. Try again in a moment." }, 500);

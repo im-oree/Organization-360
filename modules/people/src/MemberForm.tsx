@@ -1,5 +1,5 @@
 import type { Member } from "@o360/contracts";
-import { api, useAction } from "@o360/platform";
+import { api, ExtensionFields, readExt, useAction } from "@o360/platform";
 import { Button, Field, Select, Sheet } from "@o360/ui";
 import type { FormEvent } from "react";
 
@@ -8,7 +8,7 @@ export function MemberForm({ member, people, onClose }: { member?: Member; peopl
   const managers = people.filter((p) => p.status !== "offboarded" && p.id !== member?.id);
   const { run, busy, fields } = useAction(
     (f: Record<string, string>) => {
-      const input = { name: f.name!, email: f.email!, title: f.title!, department: f.department!, phone: f.phone ?? "", location: f.location ?? "", managerId: f.managerId || null, startDate: f.startDate || undefined };
+      const input = { name: f.name!, email: f.email!, title: f.title!, department: f.department!, phone: f.phone ?? "", location: f.location ?? "", managerId: f.managerId || null, startDate: f.startDate || undefined, ext: readExt(f) };
       return member ? api.run<"people.member.update", Member>("people.member.update", { id: member.id, ...input }) : api.run<"people.member.create", Member>("people.member.create", input, crypto.randomUUID());
     },
     { success: (m) => (member ? "Profile saved" : `${m.name} added`) },
@@ -34,6 +34,7 @@ export function MemberForm({ member, people, onClose }: { member?: Member; peopl
         <Field label="Phone" name="phone" type="tel" inputMode="tel" defaultValue={member?.phone} error={fields.phone} className="max-w-[240px]" />
         <Field label="Office location" name="location" defaultValue={member?.location} error={fields.location} />
         <Field label="Start date" name="startDate" type="date" defaultValue={member?.startDate} hint={member ? undefined : "Leave empty to use today."} error={fields.startDate} className="max-w-[200px]" />
+        <ExtensionFields app="people" values={member?.ext} errors={fields} />
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
           <Button type="submit" disabled={busy}>{member ? "Save profile" : "Add person"}</Button>
