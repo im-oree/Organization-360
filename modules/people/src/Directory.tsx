@@ -13,7 +13,7 @@ export function Directory({ people, loading, status: filter }: { people: Member[
     const s = q.trim().toLowerCase();
     return people
       .filter((m) => (filter === "current" ? m.status !== "offboarded" : m.status === filter))
-      .filter((m) => !s || [m.name, m.title, m.department, m.email, m.staffNo].some((v) => v.toLowerCase().includes(s)));
+      .filter((m) => !s || [m.name, m.title, m.department, m.email, m.staffNo, m.handle].some((v) => v.toLowerCase().includes(s)));
   }, [people, q, filter]);
 
   return (
@@ -21,7 +21,7 @@ export function Directory({ people, loading, status: filter }: { people: Member[
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full max-w-sm">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted" />
-          <input aria-label="Search staff" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, role, team or staff number" className={`${inputClass} pl-9`} />
+          <input aria-label="Search staff" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, @handle, role, team or staff number" className={`${inputClass} pl-9`} />
         </div>
       </div>
 

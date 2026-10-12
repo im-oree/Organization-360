@@ -1,5 +1,5 @@
 import type { BadgeScan, IdVerification, Member } from "@o360/contracts";
-import { actorOf, CommandError, defineServerModule, extensions, fileCollection, guard, signedIn } from "@o360/server-kit";
+import { actorOf, CommandError, defineServerModule, extensions, fileCollection, guard, handles, signedIn } from "@o360/server-kit";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -11,10 +11,10 @@ const members = fileCollection<Member>("people", [
 ]);
 
 // Bring records saved by earlier versions up to the current shape.
-for (const m of members.all()) if (!m.ext) members.put({ ...m, ext: {} });
+for (const m of members.all()) if (!m.ext || !m.handle) members.put({ ...m, ext: m.ext ?? {}, handle: m.handle || handles.claim(m.email, m.name) });
 
 function seed(n: number, name: string, email: string, title: string, department: string, managerId: string | null, status: Member["status"], startDate: string): Member {
-  return { id: `s${n}`, staffNo: staffNo(n), name, email, phone: "", title, department, location: "Lagos", managerId, status, startDate, joinedAt: `${startDate}T09:00:00.000Z`, ext: {} };
+  return { id: `s${n}`, handle: "", staffNo: staffNo(n), name, email, phone: "", title, department, location: "Lagos", managerId, status, startDate, joinedAt: `${startDate}T09:00:00.000Z`, ext: {} };
 }
 function staffNo(n: number) {
   return `S-${String(n).padStart(4, "0")}`;
@@ -100,13 +100,16 @@ export default defineServerModule({
     "people.member.create"(input, { bus }) {
       checkEmail(input.email);
       checkManager(input.managerId);
-      const member = members.put({ ...input, ext: extensions.clean("people", input.ext), startDate: input.startDate ?? today(), id: crypto.randomUUID(), staffNo: nextStaffNo(), status: "onboarding", joinedAt: new Date().toISOString() });
+      const member = members.put({ ...input, handle: handles.claim(input.email, input.name), ext: extensions.clean("people", input.ext), startDate: input.startDate ?? today(), id: crypto.randomUUID(), staffNo: nextStaffNo(), status: "onboarding", joinedAt: new Date().toISOString() });
       bus.publish("people.member.created", member);
       return member;
     },
     "people.member.update"({ id, ...patch }, { bus }) {
       const m = get(id);
-      if (patch.email) checkEmail(patch.email, id);
+      if (patch.email) {
+        checkEmail(patch.email, id);
+        handles.rebind(m.email, patch.email);
+      }
       if (patch.managerId !== undefined) checkManager(patch.managerId, id);
       const next = members.put({ ...m, ...patch, ext: extensions.clean("people", patch.ext, m.ext) });
       bus.publish("people.member.updated", next);

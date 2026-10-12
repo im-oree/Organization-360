@@ -25,6 +25,13 @@ A living profile of what we build and how. Every decision that proves right gets
 - Status shown as chips with fixed colour pairs (active green, pending amber, suspended red, draft grey).
 - Every page works at phone width. The sidebar becomes a drawer.
 
+## Identity of people
+
+- `id`: permanent internal id (UUID). Never shown, never changes.
+- `handle`: readable unique id like `ada.obi`, generated from the name. Unique across the organization and never reused, even after someone leaves (`ada.obi2` for the next Ada Obi). A person's sign-in account and staff record share one handle, linked by email. It's a valid email local part, so `handle@domain` is the person's address once Mail exists.
+- `staffNo`: the number printed on the ID card.
+- Everything about a person is email-ready: every record carries an email, and handles map to addresses.
+
 ## Access control
 
 - Permissions are flat keys: `<app>.<resource>.<action>`, for example `people.member.create`.

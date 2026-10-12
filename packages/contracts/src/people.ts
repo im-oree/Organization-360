@@ -4,7 +4,10 @@ import { ExtValues } from "./extensions";
 export const MemberStatus = z.enum(["onboarding", "active", "offboarded"]);
 
 export const Member = z.object({
+  /** Permanent internal id. */
   id: z.string(),
+  /** Readable unique id, e.g. "ada.obi". Never reused; shared with the person's sign-in account. */
+  handle: z.string(),
   staffNo: z.string(),
   name: z.string().min(1).max(120),
   email: z.email(),

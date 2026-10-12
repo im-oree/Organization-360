@@ -1,5 +1,5 @@
 import { defaultPrefs, Login, type Me, type Role, type User } from "@o360/contracts";
-import { CommandError, defineServerModule, fileCollection, guard, actorOf, type Actor } from "@o360/server-kit";
+import { CommandError, defineServerModule, fileCollection, guard, actorOf, handles, type Actor } from "@o360/server-kit";
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 
@@ -37,10 +37,13 @@ const findByEmail = (email: string) => users.all().find((u) => u.email.toLowerCa
 function createUser(name: string, email: string, password: string, roleIds: string[], mustChangePassword: boolean) {
   if (findByEmail(email)) throw new CommandError("Someone already uses that email address. Try a different one.", 409);
   for (const r of roleIds) if (!roles.get(r)) throw new CommandError("One of the selected roles no longer exists. Refresh and pick again.", 422);
-  const user = users.put({ id: crypto.randomUUID(), name, email, roleIds, status: "active", mustChangePassword, prefs: defaultPrefs, createdAt: new Date().toISOString() });
+  const user = users.put({ id: crypto.randomUUID(), handle: handles.claim(email, name), name, email, roleIds, status: "active", mustChangePassword, prefs: defaultPrefs, createdAt: new Date().toISOString() });
   credentials.put({ id: user.id, ...hashPassword(password) });
   return user;
 }
+
+// Accounts saved by earlier versions get their handle.
+for (const u of users.all()) if (!u.handle) users.put({ ...u, handle: handles.claim(u.email, u.name) });
 
 /** First run: create the owner account from env, or a generated password printed once. */
 if (users.all().length === 0) {

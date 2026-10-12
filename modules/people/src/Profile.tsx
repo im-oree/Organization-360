@@ -44,7 +44,7 @@ export function Profile({ people }: { people: Member[] }) {
         <Avatar name={m.name} size={56} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2"><h1 className="text-[20px] font-bold text-accent">{m.name}</h1>{statusChip(m.status)}</div>
-          <p className="text-[14px] text-muted">{m.title} · {m.department}</p>
+          <p className="text-[14px] text-muted"><span className="font-medium text-ink">@{m.handle}</span> · {m.title} · {m.department}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {m.status === "onboarding" && can("people.member.activate") && <Button disabled={activate.busy} onClick={() => activate.run()}>Complete onboarding</Button>}

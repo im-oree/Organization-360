@@ -23,6 +23,7 @@ export const defaultPrefs: Prefs = { theme: "system", desktopNotifications: true
 
 export const User = z.object({
   id: z.string(),
+  handle: z.string(),
   name: z.string().min(1),
   email: z.email(),
   roleIds: z.array(z.string()),
